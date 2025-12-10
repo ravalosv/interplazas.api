@@ -1,0 +1,96 @@
+{
+  "info": {
+    "name": "Inter API - Filiales",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Filiales - Lista",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{interapi_url}}/filial",
+          "host": ["{{interapi_url}}"],
+          "path": ["filial"]
+        }
+      }
+    },
+    {
+      "name": "Filial - Obtener por ID",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{interapi_url}}/filial/{{filialId}}",
+          "host": ["{{interapi_url}}"],
+          "path": ["filial", "{{filialId}}"]
+        }
+      }
+    },
+    {
+      "name": "Filial - Crear",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Nueva Filial\",\n  \"extranjera\": false\n}"
+        },
+        "url": {
+          "raw": "{{interapi_url}}/filial",
+          "host": ["{{interapi_url}}"],
+          "path": ["filial"]
+        }
+      }
+    },
+    {
+      "name": "Filial - Actualizar",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Filial Editada\",\n  \"extranjera\": true\n}"
+        },
+        "url": {
+          "raw": "{{interapi_url}}/filial/{{filialId}}",
+          "host": ["{{interapi_url}}"],
+          "path": ["filial", "{{filialId}}"]
+        }
+      }
+    },
+    {
+      "name": "Filial - Eliminar",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{interapi_url}}/filial/{{filialId}}",
+          "host": ["{{interapi_url}}"],
+          "path": ["filial", "{{filialId}}"]
+        }
+      }
+    }
+  ],
+  "variable": [
+    { "key": "interapi_url", "value": "http://localhost:3001/api" },
+    { "key": "token", "value": "" },
+    { "key": "filialId", "value": "1" }
+  ]
+}

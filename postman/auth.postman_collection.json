@@ -1,0 +1,124 @@
+{
+  "info": {
+    "name": "Inter API - Auth",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth - Login",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}"
+        },
+        "url": {
+          "raw": "{{interapi_url}}/auth/login",
+          "host": ["{{interapi_url}}"],
+          "path": ["auth", "login"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const json = pm.response.json();",
+              "if (json && json.data) {",
+              "  const token = json.data.token;",
+              "  const refreshToken = json.data.refreshToken;",
+              "  if (token) pm.collectionVariables.set('token', token);",
+              "  if (refreshToken) pm.collectionVariables.set('refreshToken', refreshToken);",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Auth - Register",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"newuser@example.com\",\n  \"password\": \"123456\",\n  \"name\": \"Nuevo Usuario\",\n  \"role\": \"filial\",\n  \"grupoId\": null\n}"
+        },
+        "url": {
+          "raw": "{{interapi_url}}/auth/register",
+          "host": ["{{interapi_url}}"],
+          "path": ["auth", "register"]
+        }
+      }
+    },
+    {
+      "name": "Auth - Change Password",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"userId\": {{userId}},\n  \"newPassword\": \"newpass123\"\n}"
+        },
+        "url": {
+          "raw": "{{interapi_url}}/auth/change-password",
+          "host": ["{{interapi_url}}"],
+          "path": ["auth", "change-password"]
+        }
+      }
+    },
+    {
+      "name": "Auth - Renew Token",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+        },
+        "url": {
+          "raw": "{{interapi_url}}/auth/renew-token/",
+          "host": ["{{interapi_url}}"],
+          "path": ["auth", "renew-token", ""]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const json = pm.response.json();",
+              "if (json && json.data) {",
+              "  const token = json.data.token;",
+              "  const refreshToken = json.data.refreshToken;",
+              "  if (token) pm.collectionVariables.set('token', token);",
+              "  if (refreshToken) pm.collectionVariables.set('refreshToken', refreshToken);",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    { "key": "interapi_url", "value": "http://localhost:3001/api" },
+    { "key": "email", "value": "admin@admin.com" },
+    { "key": "password", "value": "admin" },
+    { "key": "token", "value": "" },
+    { "key": "refreshToken", "value": "" },
+    { "key": "userId", "value": "1" }
+  ]
+}

@@ -1,0 +1,128 @@
+{
+  "info": {
+    "name": "Inter API - Rutas de Usuario",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Usuarios - Lista",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{interapi_url}}/user",
+          "host": ["{{interapi_url}}"],
+          "path": ["user"]
+        }
+      }
+    },
+    {
+      "name": "Usuarios - Lista (activos)",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{interapi_url}}/user?filter=active",
+          "host": ["{{interapi_url}}"],
+          "path": ["user"],
+          "query": [
+            { "key": "filter", "value": "active" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Usuarios - Lista (inactivos)",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{interapi_url}}/user?filter=inactive",
+          "host": ["{{interapi_url}}"],
+          "path": ["user"],
+          "query": [
+            { "key": "filter", "value": "inactive" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Usuario - Obtener por ID",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{interapi_url}}/user/{{userId}}",
+          "host": ["{{interapi_url}}"],
+          "path": ["user", "{{userId}}"]
+        }
+      }
+    },
+    {
+      "name": "Usuario - Actualizar",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Usuario Editado\",\n  \"email\": \"usuario@example.com\",\n  \"tipoUsuarioId\": 2,\n  \"filialId\": null\n}"
+        },
+        "url": {
+          "raw": "{{interapi_url}}/user/{{userId}}",
+          "host": ["{{interapi_url}}"],
+          "path": ["user", "{{userId}}"]
+        }
+      }
+    },
+    {
+      "name": "Usuario - Eliminar (disable)",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{interapi_url}}/user/{{userId}}",
+          "host": ["{{interapi_url}}"],
+          "path": ["user", "{{userId}}"]
+        }
+      }
+    },
+    {
+      "name": "Usuario - Activar",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{interapi_url}}/user/{{userId}}/activate",
+          "host": ["{{interapi_url}}"],
+          "path": ["user", "{{userId}}", "activate"]
+        }
+      }
+    }
+  ],
+  "variable": [
+    { "key": "interapi_url", "value": "http://localhost:3001/api" },
+    { "key": "token", "value": "" },
+    { "key": "userId", "value": "1" }
+  ]
+}
