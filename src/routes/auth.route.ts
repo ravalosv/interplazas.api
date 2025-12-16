@@ -17,7 +17,7 @@ router.post("/login", (req, res, next) => {
 /**
  * @route POST /auth/register
  */
-router.post("/register", checkJwt, checkRole(["admin"]), (req, res, next) => {
+router.post("/register", checkJwt, checkRole([1]), (req, res, next) => {
   authController
     .register(req, res)
     .then((data) => {})
@@ -27,7 +27,7 @@ router.post("/register", checkJwt, checkRole(["admin"]), (req, res, next) => {
 /**
  * @route PUT /auth/change-password
  */
-router.put("/change-password", checkJwt, checkRole(["admin"]), (req, res, next) => {
+router.put("/change-password", checkJwt, checkRole([1]), (req, res, next) => {
   authController
     .changePassword(req, res)
     .then((data) => {})

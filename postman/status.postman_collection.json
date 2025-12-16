@@ -1,0 +1,96 @@
+{
+  "info": {
+    "name": "Inter API - Status",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Status - Lista",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{interapi_url}}/status",
+          "host": ["{{interapi_url}}"],
+          "path": ["status"]
+        }
+      }
+    },
+    {
+      "name": "Status - Obtener por ID",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{interapi_url}}/status/{{statusId}}",
+          "host": ["{{interapi_url}}"],
+          "path": ["status", "{{statusId}}"]
+        }
+      }
+    },
+    {
+      "name": "Status - Crear",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Activo\"\n}"
+        },
+        "url": {
+          "raw": "{{interapi_url}}/status",
+          "host": ["{{interapi_url}}"],
+          "path": ["status"]
+        }
+      }
+    },
+    {
+      "name": "Status - Actualizar",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Inactivo\"\n}"
+        },
+        "url": {
+          "raw": "{{interapi_url}}/status/{{statusId}}",
+          "host": ["{{interapi_url}}"],
+          "path": ["status", "{{statusId}}"]
+        }
+      }
+    },
+    {
+      "name": "Status - Eliminar",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{interapi_url}}/status/{{statusId}}",
+          "host": ["{{interapi_url}}"],
+          "path": ["status", "{{statusId}}"]
+        }
+      }
+    }
+  ],
+  "variable": [
+    { "key": "interapi_url", "value": "http://localhost:3001/api" },
+    { "key": "token", "value": "" },
+    { "key": "statusId", "value": "1" }
+  ]
+}

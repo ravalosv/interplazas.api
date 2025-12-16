@@ -1,0 +1,96 @@
+{
+  "info": {
+    "name": "Inter API - Tipo Ataud",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "TipoAtaud - Lista",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{interapi_url}}/tipo_ataud",
+          "host": ["{{interapi_url}}"],
+          "path": ["tipo_ataud"]
+        }
+      }
+    },
+    {
+      "name": "TipoAtaud - Obtener por ID",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{interapi_url}}/tipo_ataud/{{tipoAtaudId}}",
+          "host": ["{{interapi_url}}"],
+          "path": ["tipo_ataud", "{{tipoAtaudId}}"]
+        }
+      }
+    },
+    {
+      "name": "TipoAtaud - Crear",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Estandar\"\n}"
+        },
+        "url": {
+          "raw": "{{interapi_url}}/tipo_ataud",
+          "host": ["{{interapi_url}}"],
+          "path": ["tipo_ataud"]
+        }
+      }
+    },
+    {
+      "name": "TipoAtaud - Actualizar",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Premium\"\n}"
+        },
+        "url": {
+          "raw": "{{interapi_url}}/tipo_ataud/{{tipoAtaudId}}",
+          "host": ["{{interapi_url}}"],
+          "path": ["tipo_ataud", "{{tipoAtaudId}}"]
+        }
+      }
+    },
+    {
+      "name": "TipoAtaud - Eliminar",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{interapi_url}}/tipo_ataud/{{tipoAtaudId}}",
+          "host": ["{{interapi_url}}"],
+          "path": ["tipo_ataud", "{{tipoAtaudId}}"]
+        }
+      }
+    }
+  ],
+  "variable": [
+    { "key": "interapi_url", "value": "http://localhost:3001/api" },
+    { "key": "token", "value": "" },
+    { "key": "tipoAtaudId", "value": "1" }
+  ]
+}

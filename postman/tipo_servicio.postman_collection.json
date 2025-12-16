@@ -1,0 +1,96 @@
+{
+  "info": {
+    "name": "Inter API - Tipo Servicio",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "TipoServicio - Lista",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{interapi_url}}/tipo_servicio",
+          "host": ["{{interapi_url}}"],
+          "path": ["tipo_servicio"]
+        }
+      }
+    },
+    {
+      "name": "TipoServicio - Obtener por ID",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{interapi_url}}/tipo_servicio/{{tipoServicioId}}",
+          "host": ["{{interapi_url}}"],
+          "path": ["tipo_servicio", "{{tipoServicioId}}"]
+        }
+      }
+    },
+    {
+      "name": "TipoServicio - Crear",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Nuevo Servicio\"\n}"
+        },
+        "url": {
+          "raw": "{{interapi_url}}/tipo_servicio",
+          "host": ["{{interapi_url}}"],
+          "path": ["tipo_servicio"]
+        }
+      }
+    },
+    {
+      "name": "TipoServicio - Actualizar",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Servicio Editado\"\n}"
+        },
+        "url": {
+          "raw": "{{interapi_url}}/tipo_servicio/{{tipoServicioId}}",
+          "host": ["{{interapi_url}}"],
+          "path": ["tipo_servicio", "{{tipoServicioId}}"]
+        }
+      }
+    },
+    {
+      "name": "TipoServicio - Eliminar",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{interapi_url}}/tipo_servicio/{{tipoServicioId}}",
+          "host": ["{{interapi_url}}"],
+          "path": ["tipo_servicio", "{{tipoServicioId}}"]
+        }
+      }
+    }
+  ],
+  "variable": [
+    { "key": "interapi_url", "value": "http://localhost:3001/api" },
+    { "key": "token", "value": "" },
+    { "key": "tipoServicioId", "value": "1" }
+  ]
+}

@@ -38,7 +38,7 @@ const checkJwt = async (req: RequestExt, res: Response, next: NextFunction) => {
   }
 };
 
-const checkRole = (roles: string[]) => async (req: RequestExt, res: Response, next: NextFunction) => {
+const checkRole = (roles: number[]) => async (req: RequestExt, res: Response, next: NextFunction) => {
   const token = req.headers.authorization?.split(" ")[1];
   if (!token) {
     return res.status(401).send({ message: "No token provided." });
@@ -46,9 +46,9 @@ const checkRole = (roles: string[]) => async (req: RequestExt, res: Response, ne
 
   try {
     const decodedToken: any = jwt.verify(token, process.env.JWT_SECRET || "");
-    const userRole = decodedToken.role;
+    const userTipoUsuarioId = Number(decodedToken.tipoUsuarioId);
 
-    if (!roles.includes(userRole)) {
+    if (!roles.includes(userTipoUsuarioId)) {
       return res.status(403).send({ message: "Forbidden." });
     }
 

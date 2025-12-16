@@ -2,24 +2,24 @@ import { sign, verify } from "jsonwebtoken";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-const generateToken = async (id: string, email: string, role: string) => {
+const generateToken = async (id: string, email: string, tipoUsuarioId: number) => {
   if (!JWT_SECRET) {
     throw new Error("JWT_SECRET is not defined");
   }
 
-  const jwt = sign({ id, email, role }, JWT_SECRET, {
+  const jwt = sign({ id, email, tipoUsuarioId }, JWT_SECRET, {
     expiresIn: "60d",
   });
 
   return jwt;
 };
 
-const generateRefreshToken = async (id: string, email: string, role: string) => {
+const generateRefreshToken = async (id: string, email: string, tipoUsuarioId: number) => {
   if (!JWT_SECRET) {
     throw new Error("JWT_SECRET is not defined");
   }
 
-  const jwt = sign({ id, email, role }, JWT_SECRET, {
+  const jwt = sign({ id, email, tipoUsuarioId }, JWT_SECRET, {
     expiresIn: "2d",
   });
 

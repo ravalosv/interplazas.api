@@ -8,7 +8,7 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 import interDB from "../core/dbconfig/mariadb";
 
 // REGISTER NEW USER
-export const registerNewUser = async (userId: number, { email, password, name, role, filialId, tipoUsuarioId }: IUser) => {
+export const registerNewUser = async (userId: number, { email, password, name, filialId, tipoUsuarioId }: IUser) => {
   const t = await interDB.transaction();
   try {
     const checkIs = await UserModel.findOne({ where: { email } });
@@ -22,7 +22,6 @@ export const registerNewUser = async (userId: number, { email, password, name, r
         name,
         email,
         password: passHash,
-        role,
         tipoUsuarioId,
         filialId,
         isDisabled: false,
@@ -62,8 +61,8 @@ export const loginUser = async ({ email, password }: IAuth) => {
     return "USER_PASSWORD_WRONG";
   }
 
-  const token = await generateToken(userWithoutPassword.id!.toString(), userWithoutPassword.email, userWithoutPassword.role);
-  const refreshToken = await generateRefreshToken(userWithoutPassword.id!.toString(), userWithoutPassword.email, userWithoutPassword.role);
+  const token = await generateToken(userWithoutPassword.id!.toString(), userWithoutPassword.email, userWithoutPassword.tipoUsuarioId);
+  const refreshToken = await generateRefreshToken(userWithoutPassword.id!.toString(), userWithoutPassword.email, userWithoutPassword.tipoUsuarioId);
 
   const data = {
     user: userWithoutPassword,
@@ -151,8 +150,8 @@ export const renewToken = async (renewToken: string) => {
 
   const { password: passHash, ...userWithoutPassword } = checkIs.toJSON();
 
-  const token = await generateToken(tokenData.id, tokenData.email, tokenData.role);
-  const refreshToken = await generateRefreshToken(tokenData.id, tokenData.email, tokenData.role);
+  const token = await generateToken(tokenData.id, tokenData.email, tokenData.tipoUsuarioId);
+  const refreshToken = await generateRefreshToken(tokenData.id, tokenData.email, tokenData.tipoUsuarioId);
 
   const data = {
     user: userWithoutPassword,

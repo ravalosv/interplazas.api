@@ -1,0 +1,96 @@
+{
+  "info": {
+    "name": "Inter API - Estado Cta Status",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "EstadoCtaStatus - Lista",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{interapi_url}}/estado_cta_status",
+          "host": ["{{interapi_url}}"],
+          "path": ["estado_cta_status"]
+        }
+      }
+    },
+    {
+      "name": "EstadoCtaStatus - Obtener por ID",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{interapi_url}}/estado_cta_status/{{estadoId}}",
+          "host": ["{{interapi_url}}"],
+          "path": ["estado_cta_status", "{{estadoId}}"]
+        }
+      }
+    },
+    {
+      "name": "EstadoCtaStatus - Crear",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"En mora\"\n}"
+        },
+        "url": {
+          "raw": "{{interapi_url}}/estado_cta_status",
+          "host": ["{{interapi_url}}"],
+          "path": ["estado_cta_status"]
+        }
+      }
+    },
+    {
+      "name": "EstadoCtaStatus - Actualizar",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Al día\"\n}"
+        },
+        "url": {
+          "raw": "{{interapi_url}}/estado_cta_status/{{estadoId}}",
+          "host": ["{{interapi_url}}"],
+          "path": ["estado_cta_status", "{{estadoId}}"]
+        }
+      }
+    },
+    {
+      "name": "EstadoCtaStatus - Eliminar",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{interapi_url}}/estado_cta_status/{{estadoId}}",
+          "host": ["{{interapi_url}}"],
+          "path": ["estado_cta_status", "{{estadoId}}"]
+        }
+      }
+    }
+  ],
+  "variable": [
+    { "key": "interapi_url", "value": "http://localhost:3001/api" },
+    { "key": "token", "value": "" },
+    { "key": "estadoId", "value": "1" }
+  ]
+}

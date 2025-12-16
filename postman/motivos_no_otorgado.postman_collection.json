@@ -1,0 +1,96 @@
+{
+  "info": {
+    "name": "Inter API - Motivos No Otorgado",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Motivos - Lista",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{interapi_url}}/motivos_no_otorgado",
+          "host": ["{{interapi_url}}"],
+          "path": ["motivos_no_otorgado"]
+        }
+      }
+    },
+    {
+      "name": "Motivo - Obtener por ID",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{interapi_url}}/motivos_no_otorgado/{{motivoId}}",
+          "host": ["{{interapi_url}}"],
+          "path": ["motivos_no_otorgado", "{{motivoId}}"]
+        }
+      }
+    },
+    {
+      "name": "Motivo - Crear",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Sin Cobertura\"\n}"
+        },
+        "url": {
+          "raw": "{{interapi_url}}/motivos_no_otorgado",
+          "host": ["{{interapi_url}}"],
+          "path": ["motivos_no_otorgado"]
+        }
+      }
+    },
+    {
+      "name": "Motivo - Actualizar",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Reprogramado\"\n}"
+        },
+        "url": {
+          "raw": "{{interapi_url}}/motivos_no_otorgado/{{motivoId}}",
+          "host": ["{{interapi_url}}"],
+          "path": ["motivos_no_otorgado", "{{motivoId}}"]
+        }
+      }
+    },
+    {
+      "name": "Motivo - Eliminar",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{interapi_url}}/motivos_no_otorgado/{{motivoId}}",
+          "host": ["{{interapi_url}}"],
+          "path": ["motivos_no_otorgado", "{{motivoId}}"]
+        }
+      }
+    }
+  ],
+  "variable": [
+    { "key": "interapi_url", "value": "http://localhost:3001/api" },
+    { "key": "token", "value": "" },
+    { "key": "motivoId", "value": "1" }
+  ]
+}

@@ -1,0 +1,96 @@
+{
+  "info": {
+    "name": "Inter API - Tipo Documento",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "TipoDocumento - Lista",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{interapi_url}}/tipo_documento",
+          "host": ["{{interapi_url}}"],
+          "path": ["tipo_documento"]
+        }
+      }
+    },
+    {
+      "name": "TipoDocumento - Obtener por ID",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{interapi_url}}/tipo_documento/{{tipoDocumentoId}}",
+          "host": ["{{interapi_url}}"],
+          "path": ["tipo_documento", "{{tipoDocumentoId}}"]
+        }
+      }
+    },
+    {
+      "name": "TipoDocumento - Crear",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Nuevo Documento\"\n}"
+        },
+        "url": {
+          "raw": "{{interapi_url}}/tipo_documento",
+          "host": ["{{interapi_url}}"],
+          "path": ["tipo_documento"]
+        }
+      }
+    },
+    {
+      "name": "TipoDocumento - Actualizar",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Documento Editado\"\n}"
+        },
+        "url": {
+          "raw": "{{interapi_url}}/tipo_documento/{{tipoDocumentoId}}",
+          "host": ["{{interapi_url}}"],
+          "path": ["tipo_documento", "{{tipoDocumentoId}}"]
+        }
+      }
+    },
+    {
+      "name": "TipoDocumento - Eliminar",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{interapi_url}}/tipo_documento/{{tipoDocumentoId}}",
+          "host": ["{{interapi_url}}"],
+          "path": ["tipo_documento", "{{tipoDocumentoId}}"]
+        }
+      }
+    }
+  ],
+  "variable": [
+    { "key": "interapi_url", "value": "http://localhost:3001/api" },
+    { "key": "token", "value": "" },
+    { "key": "tipoDocumentoId", "value": "1" }
+  ]
+}
