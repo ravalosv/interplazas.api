@@ -1,0 +1,38 @@
+export interface IServicio {
+  id?: number;
+  whatsapp: string;
+  fo_Filial_otorgante_Id: number; // FilialModel
+  fo_Filial_Origen_Id: number; // FilialModel
+  fo_Contrato: string;
+  fo_Nombre_Titular: string;
+  fo_Nombre_Finado: string;
+  fo_Documento_Cliente_Id: number;
+  fo_Jefe_Turno_Nombre: string;
+  fo_Jefe_Turno_Puesto: string;
+  fo_Jefe_Turno_WhatsApp: string;
+  fo_Fecha_Servicio: Date;
+  fori_Status_Contrato_Id: number; // StatusModel
+  fori_Saldo_Contrato: number;
+  fori_Acepta_Convenio: boolean;
+  fori_Otorga_Info_Nombre: string;
+  fori_Otorga_Info_Puesto: string;
+  fori_Otorga_Info_Telefono: string;
+  fo_Contrato_Monto_Recuperado: number;
+  fo_Contrato_Monto_Convenio: number;
+  fo_Tipo_Servicio_Id: number; // TipoServicioModel
+  fo_Tipo_Ataud_Id: number; // TipoAtaudModel
+  exp_Solicitud_Servicio_Status_id: number; // EstadoCtaStatusModel  
+  exp_Solicitud_Servicio_File_Name: string;
+  exp_Comprobante_Pago_Status_Id: number;   // EstadoCtaStatusModel
+  exp_Comprobante_Pago_File_Name: string;
+  exp_Convenio_Status_Id: number; // EstadoCtaStatusModel
+  exp_Convenio_File_Name: string;
+  exp_Enviado_Grupo_Whats: boolean;
+  exp_Motivo_De_No_Otorgado_Id: number; // MotivoNoOtorgadoModel
+  exp_Expediente_Completo: string;
+  exp_Observaciones: string;
+  penalizado: boolean;
+  PeriodoId: number;
+  Usuario_CapturaId: number;
+  Fecha_Captura: Date;
+}

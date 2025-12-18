@@ -42,8 +42,11 @@ readdirSync(PATH_ROUTER)
       // Imprime un mensaje en la consola indicando que se está añadiendo la ruta
       console.log(`... Adding router for [/api/${cleanName}]`);
 
+      // Si el módulo exporta un 'default', lo usamos. Si no, usamos 'router'.
+      const routeHandler = moduleRouter.default || moduleRouter.router;
+
       // Añade la ruta del módulo al router principal
-      router.use(`/api/${cleanName}`, moduleRouter.router);
+      router.use(`/api/${cleanName}`, routeHandler);
     });
   });
 

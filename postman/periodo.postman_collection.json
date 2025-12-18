@@ -1,0 +1,50 @@
+{
+  "info": {
+    "name": "Inter API - Periodo",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Get All Periodos",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{interapi_url}}/periodo",
+          "host": ["{{interapi_url}}"],
+          "path": ["periodo"]
+        }
+      }
+    },
+    {
+      "name": "Cerrar Periodo",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{interapi_url}}/periodo/1/cerrar",
+          "host": ["{{interapi_url}}"],
+          "path": ["periodo", "1", "cerrar"]
+        }
+      }
+    },
+    {
+      "name": "Abrir Periodo",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{interapi_url}}/periodo/1/abrir",
+          "host": ["{{interapi_url}}"],
+          "path": ["periodo", "1", "abrir"]
+        }
+      }
+    }
+  ]
+}
