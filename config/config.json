@@ -2,7 +2,7 @@
   "development": {
     "username": "root",
     "password": "toor",
-    "database": "interplazas",
+    "database": "serviciosCCI",
     "host": "localhost",
     "dialect": "mariadb",
     "migrationStorageTableName": "_migrations"

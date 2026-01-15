@@ -23,7 +23,7 @@ const checkJwt = async (req: RequestExt, res: Response, next: NextFunction) => {
       }
     }
 
-    req.user = isUser.data as JwtPayload;
+   //req.user = isUser.data as JwtPayload;
 
     /*     if (!isUser) {
       res.status(401).send({ message: "Unauthorized" });

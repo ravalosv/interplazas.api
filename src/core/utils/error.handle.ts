@@ -18,16 +18,20 @@ const handleHttpException = (res: Response, error: any, errorRaw?: any) => {
 
   const errorCode = error.code || error.parent?.code;
 
-  errorMessage = getErrorMessage(errorCode);
-  /*   // Verificar si el error es una violación de clave foránea
-  if (error.parent && error.parent.code === "ER_ROW_IS_REFERENCED_2") {
-    errorMessage = "No se puede eliminar el registro porque contiene dependencias.";
-  } else if (error.parent && error.parent.code === "ER_NO_REFERENCED_ROW_2") {
-    console.log('error', error.fields);
-    errorMessage = "No se puede actualizar el registro porque contiene dependencias.";
-  } else {
-    errorMessage = error.message || errorMessage;
-  } */
+  // Default to 500
+  let statusCode = 500;
+
+  if (errorCode) {
+    errorMessage = getErrorMessage(errorCode);
+  } else if (error instanceof Error) {
+    // Si es un error genérico (lanzado con new Error()) o de validación de Sequelize, asumimos Bad Request
+    if (error.name === 'Error' || error.name === 'SequelizeValidationError' || error.name === 'SequelizeUniqueConstraintError') {
+      statusCode = 400;
+      errorMessage = error.message;
+    } else {
+      errorMessage = error.message;
+    }
+  }
 
   console.log(colors.BLINK(colors.BRIGHT_RED("****** EXCEPTION *******")));
   console.log(colors.BRIGHT_RED(`CODE: `), colors.YELLOW(`${error.code || error.parent?.code}`));
@@ -43,7 +47,7 @@ const handleHttpException = (res: Response, error: any, errorRaw?: any) => {
     error: errorMessage,
   };
 
-  res.send(apiReturnPayload);
+  res.status(statusCode).send(apiReturnPayload);
 };
 
 export { handleHttpException as handleHttp };

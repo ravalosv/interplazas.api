@@ -1,10 +1,23 @@
 import { ServicioModel, PeriodoModel } from "../data/models/models";
 import { IServicio } from "../data/interfaces/servicios.interface";
 import { Op } from "sequelize";
+import * as fs from "fs";
+import * as path from "path";
 
 export class ServicioService {
-  private calculatePenalizado(fechaServicio: Date): boolean {
-    const serviceDate = new Date(fechaServicio);
+  private calculatePenalizado(fechaServicio: string | Date): boolean {
+    // Si viene como string 'YYYY-MM-DD' (DATEONLY), lo parseamos manualmente para evitar UTC shift
+    let serviceDate: Date;
+    
+    if (typeof fechaServicio === 'string' && fechaServicio.includes('-')) {
+      // Asumimos formato YYYY-MM-DD
+      const [year, month, day] = fechaServicio.split('-').map(Number);
+      // new Date(year, monthIndex, day) crea fecha en hora local
+      serviceDate = new Date(year, month - 1, day);
+    } else {
+      serviceDate = new Date(fechaServicio);
+    }
+
     const currentDate = new Date();
 
     const serviceYear = serviceDate.getFullYear();
@@ -28,7 +41,7 @@ export class ServicioService {
         { association: "tipoDocumento" },
         { association: "statusContrato" },
         { association: "tipoServicio" },
-        { association: "tipoAtaud" },
+        { association: "concepto" },
         { association: "solicitudServicioStatus" },
         { association: "comprobantePagoStatus" },
         { association: "convenioStatus" },
@@ -61,7 +74,7 @@ export class ServicioService {
         { association: "tipoDocumento" },
         { association: "statusContrato" },
         { association: "tipoServicio" },
-        { association: "tipoAtaud" },
+        { association: "concepto" },
         { association: "solicitudServicioStatus" },
         { association: "comprobantePagoStatus" },
         { association: "convenioStatus" },
@@ -72,7 +85,30 @@ export class ServicioService {
     });
   }
 
-  async create(data: Omit<IServicio, "id" | "Usuario_CapturaId" | "Fecha_Captura" | "penalizado" | "PeriodoId">, userId: number) {
+  async getByPeriodoId(periodoId: number) {
+    return await ServicioModel.findAll({
+      where: {
+        PeriodoId: periodoId,
+      },
+      order: [["fo_Fecha_Servicio", "DESC"]],
+      include: [
+        { association: "filialOtorgante" },
+        { association: "filialOrigen" },
+        { association: "tipoDocumento" },
+        { association: "statusContrato" },
+        { association: "tipoServicio" },
+        { association: "concepto" },
+        { association: "solicitudServicioStatus" },
+        { association: "comprobantePagoStatus" },
+        { association: "convenioStatus" },
+        { association: "motivoNoOtorgado" },
+        { association: "usuarioCaptura", attributes: ["id", "name", "email"] },
+        { association: "periodo" },
+      ],
+    });
+  }
+
+  async create(data: Omit<IServicio, "id" | "Usuario_CapturaId" | "Fecha_Captura" | "penalizado" | "PeriodoId">, userId: number, file?: Express.Multer.File) {
     const penalizado = this.calculatePenalizado(data.fo_Fecha_Servicio);
     
     // Calcular Periodo basado en fecha actual (Fecha_Captura)
@@ -102,7 +138,73 @@ export class ServicioService {
       penalizado,
       PeriodoId: periodo.id
     };
-    return await ServicioModel.create(newData);
+
+    const createdServicio = await ServicioModel.create(newData);
+
+    if (file) {
+      const url = this.moveFile(file, createdServicio.id);
+      await createdServicio.update({ fo_Documento_Cliente_url: url });
+      // Reload to get the updated field
+      return await createdServicio.reload();
+    }
+
+    return createdServicio;
+  }
+
+  async uploadDocument(id: number, fieldName: string, file: Express.Multer.File) {
+    const servicio = await ServicioModel.findByPk(id);
+    if (!servicio) throw new Error("Servicio no encontrado");
+
+    // Remove old file if exists
+    // @ts-ignore
+    const oldPath = servicio[fieldName];
+    if (oldPath) {
+      this.removeFile(oldPath);
+    }
+
+    const url = this.moveFile(file, id);
+    // @ts-ignore
+    await servicio.update({ [fieldName]: url });
+
+    return servicio;
+  }
+
+  async deleteDocument(id: number, fieldName: string) {
+    const servicio = await ServicioModel.findByPk(id);
+    if (!servicio) throw new Error("Servicio no encontrado");
+
+    // @ts-ignore
+    const oldPath = servicio[fieldName];
+    if (oldPath) {
+      this.removeFile(oldPath);
+    }
+
+    // @ts-ignore
+    await servicio.update({ [fieldName]: null });
+    return true;
+  }
+
+  private moveFile(file: Express.Multer.File, serviceId: number): string {
+    const storagePath = path.join(process.cwd(), "storage", "servicios", serviceId.toString());
+    
+    if (!fs.existsSync(storagePath)) {
+      fs.mkdirSync(storagePath, { recursive: true });
+    }
+
+    const ext = file.originalname.split(".").pop();
+    const fileName = `${Date.now()}.${ext}`;
+    const newPath = path.join(storagePath, fileName);
+
+    fs.renameSync(file.path, newPath);
+
+    return `servicios/${serviceId}/${fileName}`; // Relative URL for frontend
+  }
+
+  private removeFile(relativePath: string) {
+    const fullPath = path.join(process.cwd(), "storage", relativePath);
+    if (fs.existsSync(fullPath)) {
+      fs.unlinkSync(fullPath);
+    }
   }
 
   async getById(id: number) {
@@ -113,7 +215,7 @@ export class ServicioService {
         { association: "tipoDocumento" },
         { association: "statusContrato" },
         { association: "tipoServicio" },
-        { association: "tipoAtaud" },
+        { association: "concepto" },
         { association: "solicitudServicioStatus" },
         { association: "comprobantePagoStatus" },
         { association: "convenioStatus" },

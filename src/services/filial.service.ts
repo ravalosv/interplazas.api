@@ -1,9 +1,11 @@
 import { Transaction } from "sequelize";
 import { IFilial } from "../data/interfaces/filial.interface";
-import { FilialModel } from "../data/models/models";
+import { FilialModel, GrupoModel, SucursalModel } from "../data/models/models";
 
 export const getFiliales = async () => {
-  const filiales = await FilialModel.findAll();
+  const filiales = await FilialModel.findAll({
+    include: [{ model: GrupoModel, as: "grupo" }],
+  });
   return filiales.map((f) => f.toJSON());
 };
 
@@ -13,10 +15,10 @@ export const getFilialById = async (id: number) => {
   return filial.toJSON();
 };
 
-export const createFilial = async ({ nombre, extranjera }: IFilial) => {
+export const createFilial = async ({ nombre, extranjera, grupoId }: IFilial) => {
   const t = await FilialModel.sequelize!.transaction();
   try {
-    const nueva = await FilialModel.create({ nombre, extranjera }, { transaction: t });
+    const nueva = await FilialModel.create({ nombre, extranjera, grupoId }, { transaction: t });
     await t.commit();
     return nueva.toJSON();
   } catch (error) {
@@ -25,14 +27,14 @@ export const createFilial = async ({ nombre, extranjera }: IFilial) => {
   }
 };
 
-export const updateFilial = async (id: number, { nombre, extranjera }: Partial<IFilial>) => {
+export const updateFilial = async (id: number, { nombre, extranjera, grupoId }: Partial<IFilial>) => {
   const t = await FilialModel.sequelize!.transaction();
   try {
     const filial = await FilialModel.findByPk(id);
     if (!filial) throw new Error("FILIAL_NOT_FOUND");
 
     const actualizada = await filial.update(
-      { nombre, extranjera },
+      { nombre, extranjera, grupoId },
       { transaction: t }
     );
     await t.commit();
@@ -48,6 +50,11 @@ export const deleteFilial = async (id: number) => {
   try {
     const filial = await FilialModel.findByPk(id);
     if (!filial) throw new Error("FILIAL_NOT_FOUND");
+
+    const sucursalesCount = await SucursalModel.count({ where: { filialId: id } });
+    if (sucursalesCount > 0) {
+      throw new Error("FILIAL_HAS_SUCURSALES");
+    }
 
     await filial.destroy({ transaction: t });
     await t.commit();

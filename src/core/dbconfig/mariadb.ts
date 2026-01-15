@@ -7,6 +7,7 @@ const db_user_name = process.env.DB_USERNAME;
 const db_password = process.env.DB_PASSWORD;
 const db_host = process.env.DB_HOST;
 const db_port = process.env.DB_PORT;
+const db_timezone = process.env.DB_TIMEZONE || "-06:00";
 
 const enable_db_log = process.env.ENABLE_DB_LOG === "true";
 const db_sync = process.env.ENABLE_DB_SYNC === "true";
@@ -15,6 +16,7 @@ const interDB = new Sequelize(db_name!, db_user_name!, db_password!, {
   host: db_host,
   port: parseInt(db_port!),
   dialect: "mariadb",
+  timezone: db_timezone,
   logging: (msg) => {
     if (!enable_db_log) return;
     console.log(msg);
@@ -37,7 +39,7 @@ const interDB = new Sequelize(db_name!, db_user_name!, db_password!, {
 async function dbConnection() {
   let sincronizando = false;
   try {
-    console.log("Connecting to Interplazas database...");
+    console.log("Connecting to Servicios CCI database...");
     await interDB.authenticate();
 
     // UNCOMMENT NEXT LINE TO SYNC MODELS WITH DATABASE
@@ -49,7 +51,7 @@ async function dbConnection() {
       try {
         await interDB.sync({ force: false, alter: true });
         console.log("\x1b[32m%s\x1b[0m", "All models were synchronized successfully.");
-        console.log("\x1b[32m%s\x1b[0m", "Interplazas Database online.");
+        console.log("\x1b[32m%s\x1b[0m", "Servicios CCI Database online.");
       } catch (err) {
         console.error("\x1b[31m%s\x1b[0m", "Error syncing models:", err);
         throw err;
@@ -57,10 +59,10 @@ async function dbConnection() {
     }
 
     if (!sincronizando) {
-      console.log("\x1b[32m%s\x1b[0m", "Interplazas Database online.");
+      console.log("\x1b[32m%s\x1b[0m", "Servicios CCI Database online.");
     }
   } catch (error) {
-    console.error("Unable to connect to Interplazas database:", error);
+    console.error("Unable to connect to Servicios CCI database:", error);
     throw error;
   }
 }

@@ -1,12 +1,15 @@
 export interface IServicio {
   id?: number;
-  whatsapp: string;
-  fo_Filial_otorgante_Id: number; // FilialModel
-  fo_Filial_Origen_Id: number; // FilialModel
+  canalComunicacionId: number | null;
+  fo_Sucursal_otorgante_Id: number; // SucursalModel
+  fo_Sucursal_Origen_Id: number; // SucursalModel
   fo_Contrato: string;
   fo_Nombre_Titular: string;
   fo_Nombre_Finado: string;
   fo_Documento_Cliente_Id: number;
+  fo_Documento_Cliente_url: string;
+  fo_Monto_devuelto_documento_url: string;
+  fo_Monto_Devuelto: number;
   fo_Jefe_Turno_Nombre: string;
   fo_Jefe_Turno_Puesto: string;
   fo_Jefe_Turno_WhatsApp: string;
@@ -20,17 +23,17 @@ export interface IServicio {
   fo_Contrato_Monto_Recuperado: number;
   fo_Contrato_Monto_Convenio: number;
   fo_Tipo_Servicio_Id: number; // TipoServicioModel
-  fo_Tipo_Ataud_Id: number; // TipoAtaudModel
+  fo_Concepto_Id: number; // ConceptoModel
   exp_Solicitud_Servicio_Status_id: number; // EstadoCtaStatusModel  
-  exp_Solicitud_Servicio_File_Name: string;
+  exp_Solicitud_Servicio_url: string;
   exp_Comprobante_Pago_Status_Id: number;   // EstadoCtaStatusModel
-  exp_Comprobante_Pago_File_Name: string;
+  exp_Comprobante_Pago_url: string;
   exp_Convenio_Status_Id: number; // EstadoCtaStatusModel
-  exp_Convenio_File_Name: string;
+  exp_Convenio_url: string;
   exp_Enviado_Grupo_Whats: boolean;
   exp_Motivo_De_No_Otorgado_Id: number; // MotivoNoOtorgadoModel
   exp_Expediente_Completo: string;
-  exp_Observaciones: string;
+  exp_Observaciones_cierre: string;
   penalizado: boolean;
   PeriodoId: number;
   Usuario_CapturaId: number;

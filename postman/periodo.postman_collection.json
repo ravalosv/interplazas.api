@@ -9,12 +9,19 @@
       "request": {
         "method": "GET",
         "header": [
-          { "key": "Authorization", "value": "Bearer {{token}}" }
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
         ],
         "url": {
           "raw": "{{interapi_url}}/periodo",
-          "host": ["{{interapi_url}}"],
-          "path": ["periodo"]
+          "host": [
+            "{{interapi_url}}"
+          ],
+          "path": [
+            "periodo"
+          ]
         }
       }
     },
@@ -23,12 +30,21 @@
       "request": {
         "method": "PATCH",
         "header": [
-          { "key": "Authorization", "value": "Bearer {{token}}" }
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
         ],
         "url": {
           "raw": "{{interapi_url}}/periodo/1/cerrar",
-          "host": ["{{interapi_url}}"],
-          "path": ["periodo", "1", "cerrar"]
+          "host": [
+            "{{interapi_url}}"
+          ],
+          "path": [
+            "periodo",
+            "1",
+            "cerrar"
+          ]
         }
       }
     },
@@ -37,12 +53,81 @@
       "request": {
         "method": "PATCH",
         "header": [
-          { "key": "Authorization", "value": "Bearer {{token}}" }
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
         ],
         "url": {
           "raw": "{{interapi_url}}/periodo/1/abrir",
-          "host": ["{{interapi_url}}"],
-          "path": ["periodo", "1", "abrir"]
+          "host": [
+            "{{interapi_url}}"
+          ],
+          "path": [
+            "periodo",
+            "1",
+            "abrir"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Generar Cédulas",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"anio\": 2024,\n    \"mes\": 12\n}"
+        },
+        "url": {
+          "raw": "{{interapi_url}}/periodo/crear_cedulas",
+          "host": [
+            "{{interapi_url}}"
+          ],
+          "path": [
+            "periodo",
+            "crear_cedulas"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Eliminar Cédulas",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"anio\": 2024,\n    \"mes\": 12\n}"
+        },
+        "url": {
+          "raw": "{{interapi_url}}/periodo/eliminar_cedulas",
+          "host": [
+            "{{interapi_url}}"
+          ],
+          "path": [
+            "periodo",
+            "eliminar_cedulas"
+          ]
         }
       }
     }

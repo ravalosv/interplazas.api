@@ -10,16 +10,16 @@ const storage = diskStorage({
   },
   filename(req: Request, file: Express.Multer.File, cb: any) {
     const ext = file.originalname.split(".").pop();
-    const fileNameRandom = `${file.originalname}-image-${Date.now()}.${ext}`;
+    const fileNameRandom = `${file.originalname.replace(/\.[^/.]+$/, "")}-${Date.now()}.${ext}`;
     cb(null, fileNameRandom);
   },
 });
 
 const fileFilter = (req: Request, file: Express.Multer.File, cb: any) => {
-  if (file.mimetype.startsWith("image/")) {
+  if (file.mimetype.startsWith("image/") || file.mimetype === "application/pdf") {
     cb(null, true);
   } else {
-    cb(new Error("Solo se permiten imágenes"), false);
+    cb(new Error("Solo se permiten imágenes y archivos PDF"), false);
   }
 };
 

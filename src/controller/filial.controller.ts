@@ -27,8 +27,8 @@ export const getFilial = async (req: Request, res: Response) => {
 
 export const createFilial = async (req: Request, res: Response) => {
   try {
-    const { nombre, extranjera } = req.body;
-    const data = await filialService.createFilial({ nombre, extranjera });
+    const { nombre, extranjera, grupoId } = req.body;
+    const data = await filialService.createFilial({ nombre, extranjera, grupoId });
     const ret: ApiReturnPayload = { success: true, data };
     return res.send(ret);
   } catch (error: any) {
@@ -40,8 +40,8 @@ export const createFilial = async (req: Request, res: Response) => {
 export const updateFilial = async (req: Request, res: Response) => {
   try {
     const id = Number(req.params.id);
-    const { nombre, extranjera } = req.body;
-    const data = await filialService.updateFilial(id, { nombre, extranjera });
+    const { nombre, extranjera, grupoId } = req.body;
+    const data = await filialService.updateFilial(id, { nombre, extranjera, grupoId });
     const ret: ApiReturnPayload = { success: true, data };
     return res.send(ret);
   } catch (error: any) {

@@ -1,10 +1,11 @@
-import { PeriodoModel } from "../data/models/models";
+import { PeriodoModel, CedulaModel } from "../data/models/models";
 import { IPeriodo } from "../data/interfaces/periodo.interface";
 
 export class PeriodoService {
   async getAll() {
     return await PeriodoModel.findAll({
-      order: [["anio", "DESC"], ["mes", "DESC"]]
+      order: [["anio", "DESC"], ["mes", "DESC"]],
+      include: [{ association: "cedulas", attributes: ["id"] }]
     });
   }
 
@@ -23,6 +24,10 @@ export class PeriodoService {
   async abrirPeriodo(id: number) {
     const periodo = await PeriodoModel.findByPk(id);
     if (!periodo) return null;
+
+    // Eliminar cédulas asociadas al abrir el periodo
+    await CedulaModel.destroy({ where: { periodoId: id } });
+
     return await periodo.update({ activo: true });
   }
 }

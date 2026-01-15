@@ -56,7 +56,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"whatsapp\": \"5551234567\",\n  \"fo_Filial_otorgante_Id\": 2,\n  \"fo_Filial_Origen_Id\": 2,\n  \"fo_Contrato\": \"CON-001\",\n  \"fo_Nombre_Titular\": \"Juan Perez\",\n  \"fo_Nombre_Finado\": \"Maria Perez\",\n  \"fo_Documento_Cliente_Id\": 1,\n  \"fo_Jefe_Turno_Nombre\": \"Pedro Jefe\",\n  \"fo_Jefe_Turno_Puesto\": \"Gerente\",\n  \"fo_Jefe_Turno_WhatsApp\": \"5559876543\",\n  \"fo_Fecha_Servicio\": \"2024-05-23\",\n  \"fori_Status_Contrato_Id\": 1,\n  \"fori_Saldo_Contrato\": 5000.00,\n  \"fori_Acepta_Convenio\": true,\n  \"fori_Otorga_Info_Nombre\": \"Ana Info\",\n  \"fori_Otorga_Info_Puesto\": \"Recepcionista\",\n  \"fori_Otorga_Info_Telefono\": \"5551112233\",\n  \"fo_Contrato_Monto_Recuperado\": 1000.00,\n  \"fo_Contrato_Monto_Convenio\": 4000.00,\n  \"fo_Tipo_Servicio_Id\": 1,\n  \"fo_Tipo_Ataud_Id\": 1,\n  \"exp_Solicitud_Servicio_Status_id\": 1,\n  \"exp_Solicitud_Servicio_File_Name\": \"solicitud.pdf\",\n  \"exp_Comprobante_Pago_Status_Id\": 1,\n  \"exp_Comprobante_Pago_File_Name\": \"pago.pdf\",\n  \"exp_Convenio_Status_Id\": 1,\n  \"exp_Convenio_File_Name\": \"convenio.pdf\",\n  \"exp_Enviado_Grupo_Whats\": true,\n  \"exp_Motivo_De_No_Otorgado_Id\": null,\n  \"exp_Expediente_Completo\": \"SI\",\n  \"exp_Observaciones\": \"Ninguna\"\n}"
+          "raw": "{\n  \"canalComunicacionId\": 1,\n  \"fo_Sucursal_otorgante_Id\": 2,\n  \"fo_Sucursal_Origen_Id\": 2,\n  \"fo_Contrato\": \"CON-001\",\n  \"fo_Nombre_Titular\": \"Juan Perez\",\n  \"fo_Nombre_Finado\": \"Maria Perez\",\n  \"fo_Documento_Cliente_Id\": 1,\n  \"fo_Documento_Cliente_url\": \"servicios/1/documento_cliente.pdf\",\n  \"fo_Monto_Devuelto\": 500.00,\n  \"fo_Monto_devuelto_documento_url\": \"servicios/1/monto_devuelto.pdf\",\n  \"fo_Jefe_Turno_Nombre\": \"Pedro Jefe\",\n  \"fo_Jefe_Turno_Puesto\": \"Gerente\",\n  \"fo_Jefe_Turno_WhatsApp\": \"5559876543\",\n  \"fo_Fecha_Servicio\": \"2024-05-23\",\n  \"fori_Status_Contrato_Id\": 1,\n  \"fori_Saldo_Contrato\": 5000.00,\n  \"fori_Acepta_Convenio\": true,\n  \"fori_Otorga_Info_Nombre\": \"Ana Info\",\n  \"fori_Otorga_Info_Puesto\": \"Recepcionista\",\n  \"fori_Otorga_Info_Telefono\": \"5551112233\",\n  \"fo_Contrato_Monto_Recuperado\": 1000.00,\n  \"fo_Contrato_Monto_Convenio\": 4000.00,\n  \"fo_Tipo_Servicio_Id\": 1,\n  \"fo_Concepto_Id\": 1,\n  \"exp_Solicitud_Servicio_Status_id\": 1,\n  \"exp_Solicitud_Servicio_url\": \"servicios/1/solicitud.pdf\",\n  \"exp_Comprobante_Pago_Status_Id\": 1,\n  \"exp_Comprobante_Pago_url\": \"servicios/1/comprobante_pago.pdf\",\n  \"exp_Convenio_Status_Id\": 1,\n  \"exp_Convenio_url\": \"servicios/1/convenio.pdf\",\n  \"exp_Enviado_Grupo_Whats\": true,\n  \"exp_Motivo_De_No_Otorgado_Id\": null,\n  \"exp_Expediente_Completo\": \"SI\",\n  \"exp_Observaciones\": \"Ninguna\"\n}"
         },
         "url": {
           "raw": "{{interapi_url}}/servicio",
@@ -75,7 +75,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"whatsapp\": \"5559998877\"\n}"
+          "raw": "{\n  \"canalComunicacionId\": 2\n}"
         },
         "url": {
           "raw": "{{interapi_url}}/servicio/1",

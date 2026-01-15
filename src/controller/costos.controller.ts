@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 import { ApiReturnPayload } from "../data/payloads/api-return.payload";
-import * as tipoAtaudService from "../services/tipo-ataud.service";
+import * as costosService from "../services/costos.service";
 
-export const getTiposAtaud = async (req: Request, res: Response) => {
+export const getCostos = async (req: Request, res: Response) => {
   try {
-    const data = await tipoAtaudService.getTiposAtaud();
+    const data = await costosService.getCostos();
     const ret: ApiReturnPayload = { success: true, data };
     return res.send(ret);
   } catch (error: any) {
@@ -13,10 +13,10 @@ export const getTiposAtaud = async (req: Request, res: Response) => {
   }
 };
 
-export const getTipoAtaud = async (req: Request, res: Response) => {
+export const getCosto = async (req: Request, res: Response) => {
   try {
     const id = Number(req.params.id);
-    const data = await tipoAtaudService.getTipoAtaudById(id);
+    const data = await costosService.getCostoById(id);
     const ret: ApiReturnPayload = { success: true, data };
     return res.send(ret);
   } catch (error: any) {
@@ -25,10 +25,10 @@ export const getTipoAtaud = async (req: Request, res: Response) => {
   }
 };
 
-export const createTipoAtaud = async (req: Request, res: Response) => {
+export const createCosto = async (req: Request, res: Response) => {
   try {
-    const { nombre } = req.body;
-    const data = await tipoAtaudService.createTipoAtaud({ nombre });
+    const { costo_servicio } = req.body;
+    const data = await costosService.createCosto({ costo_servicio });
     const ret: ApiReturnPayload = { success: true, data };
     return res.send(ret);
   } catch (error: any) {
@@ -37,23 +37,23 @@ export const createTipoAtaud = async (req: Request, res: Response) => {
   }
 };
 
-export const updateTipoAtaud = async (req: Request, res: Response) => {
-  try {
-    const id = Number(req.params.id);
-    const { nombre } = req.body;
-    const data = await tipoAtaudService.updateTipoAtaud(id, { nombre });
-    const ret: ApiReturnPayload = { success: true, data };
-    return res.send(ret);
-  } catch (error: any) {
-    const ret: ApiReturnPayload = { success: false, error: error.message || "INTERNAL_SERVER_ERROR" };
-    return res.send(ret);
-  }
-};
-
-export const deleteTipoAtaud = async (req: Request, res: Response) => {
+export const updateCosto = async (req: Request, res: Response) => {
   try {
     const id = Number(req.params.id);
-    const data = await tipoAtaudService.deleteTipoAtaud(id);
+    const { costo_servicio } = req.body;
+    const data = await costosService.updateCosto(id, { costo_servicio });
+    const ret: ApiReturnPayload = { success: true, data };
+    return res.send(ret);
+  } catch (error: any) {
+    const ret: ApiReturnPayload = { success: false, error: error.message || "INTERNAL_SERVER_ERROR" };
+    return res.send(ret);
+  }
+};
+
+export const deleteCosto = async (req: Request, res: Response) => {
+  try {
+    const id = Number(req.params.id);
+    const data = await costosService.deleteCosto(id);
     const ret: ApiReturnPayload = { success: true, data };
     return res.send(ret);
   } catch (error: any) {
