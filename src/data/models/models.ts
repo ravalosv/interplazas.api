@@ -17,6 +17,7 @@ import { IGrupo } from "../interfaces/grupo.interface";
 import { ISucursal } from "../interfaces/sucursal.interface";
 import { ICanalComunicacion } from "../interfaces/canal_comunicacion.interface";
 import { IServicioObservacion } from "../interfaces/servicio_observacion.interface";
+import { ISettings } from "../interfaces/settings.interface";
 
 
 // Define el modelo usando la interfaz
@@ -640,11 +641,20 @@ PeriodoModel.init(
 class CedulaModel extends Model<ICedula> implements ICedula {
   public id!: number;
   public periodoId!: number;
+  public periodoNombre!: string;
   public filialId!: number;
+  public filialNombre!: string;
+  public grupoId!: number;
+  public grupoNombre!: string;
   public totalFavor!: number;
   public totalPagar!: number;
   public totalUsa!: number;
   public totalNeto!: number;
+  public comisionPF!: number;
+  public saldosEfectivamenteCobradosFavor!: number;
+  public saldosEfectivamenteCobradosPagar!: number;
+  public saldosEfectivamenteCobradosTotal!: number;
+  public totalFinal!: number;
 }
 
 CedulaModel.init(
@@ -659,10 +669,26 @@ CedulaModel.init(
       allowNull: false,
       references: { model: "periodos", key: "id" },
     },
+    periodoNombre: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     filialId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: { model: "filiales", key: "id" },
+    },
+    filialNombre: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    grupoId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    grupoNombre: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     totalFavor: {
       type: DataTypes.DECIMAL(10, 2),
@@ -684,6 +710,31 @@ CedulaModel.init(
       allowNull: false,
       defaultValue: 0,
     },
+    comisionPF: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: false,
+      defaultValue: 0,
+    },
+    saldosEfectivamenteCobradosFavor: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: false,
+      defaultValue: 0,
+    },
+    saldosEfectivamenteCobradosPagar: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: false,
+      defaultValue: 0,
+    },
+    saldosEfectivamenteCobradosTotal: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: false,
+      defaultValue: 0,
+    },
+    totalFinal: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: false,
+      defaultValue: 0,
+    },
   },
   {
     sequelize: interDB,
@@ -698,9 +749,20 @@ class CedulaDetalleModel extends Model<ICedulaDetalle> implements ICedulaDetalle
   public cedulaId!: number;
   public servicioId!: number;
   public tipo!: 'FAVOR' | 'PAGAR' | 'USA';
+  public sucursalOrigenNombre!: string;
   public monto!: number;
-  public filialOrigenId!: number;
-  public filialOtorganteId!: number;
+  public sucursalOrigenId!: number;
+  public sucursalOtorganteId!: number;
+  public sucursalOtorganteNombre!: string;
+  public titular!: string;
+  public finado!: string;
+  public contrato!: string;
+  public fecha!: Date;
+  public conceptoId!: number;
+  public conceptoNombre!: string;
+  public saldoPABS!: number;
+  public observacion!: string;
+  public saldoEfectivamenteCobrado!: number;
 }
 
 CedulaDetalleModel.init(
@@ -728,15 +790,60 @@ CedulaDetalleModel.init(
       type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
     },
-    filialOrigenId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: { model: "filiales", key: "id" },
+    sucursalOrigenNombre: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
-    filialOtorganteId: {
+    sucursalOrigenId: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: { model: "filiales", key: "id" },
+      references: { model: "sucursales", key: "id" },
+    },
+    sucursalOtorganteId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: { model: "sucursales", key: "id" },
+    },
+    sucursalOtorganteNombre: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    titular: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    finado: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    contrato: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    fecha: {
+      type: DataTypes.DATEONLY,
+      allowNull: true,
+    },
+    conceptoId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: { model: "conceptos", key: "id" },
+    },
+    conceptoNombre: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    saldoPABS: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: true,
+    },
+    observacion: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    saldoEfectivamenteCobrado: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: true,
     },
   },
   {
@@ -841,6 +948,32 @@ ServicioObservacionModel.init(
   }
 );
 
+class SettingsModel extends Model<ISettings> implements ISettings {
+  public id!: number;
+  public comisionPF!: number;
+}
+
+SettingsModel.init(
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    comisionPF: {
+      type: DataTypes.DECIMAL(5, 2),
+      allowNull: false,
+      defaultValue: 0,
+    },
+  },
+  {
+    sequelize: interDB,
+    modelName: "Settings",
+    tableName: "settings",
+    timestamps: true,
+  }
+);
+
 // Associations
 FilialModel.belongsTo(GrupoModel, { foreignKey: "grupoId", as: "grupo" });
 GrupoModel.hasMany(FilialModel, { foreignKey: "grupoId", as: "filiales" });
@@ -853,8 +986,8 @@ UserModel.belongsTo(FilialModel, { foreignKey: "filialId", as: "filial" });
 
 // Relaciones para ServicioModel
 ServicioModel.belongsTo(CanalComunicacionModel, { foreignKey: "canalComunicacionId", as: "canalComunicacion" });
-ServicioModel.belongsTo(SucursalModel, { foreignKey: "fo_Sucursal_otorgante_Id", as: "filialOtorgante" });
-ServicioModel.belongsTo(SucursalModel, { foreignKey: "fo_Sucursal_Origen_Id", as: "filialOrigen" });
+ServicioModel.belongsTo(SucursalModel, { foreignKey: "fo_Sucursal_otorgante_Id", as: "sucursalOtorgante" });
+ServicioModel.belongsTo(SucursalModel, { foreignKey: "fo_Sucursal_Origen_Id", as: "sucursalOrigen" });
 ServicioModel.belongsTo(TipoDocumentoModel, { foreignKey: "fo_Documento_Cliente_Id", as: "tipoDocumento" });
 ServicioModel.belongsTo(StatusContratoModel, { foreignKey: "fori_Status_Contrato_Id", as: "statusContrato" });
 ServicioModel.belongsTo(TipoServicioModel, { foreignKey: "fo_Tipo_Servicio_Id", as: "tipoServicio" });
@@ -878,8 +1011,8 @@ CedulaModel.hasMany(CedulaDetalleModel, { foreignKey: "cedulaId", as: "detalles"
 
 CedulaDetalleModel.belongsTo(CedulaModel, { foreignKey: "cedulaId", as: "cedula" });
 CedulaDetalleModel.belongsTo(ServicioModel, { foreignKey: "servicioId", as: "servicio" });
-CedulaDetalleModel.belongsTo(FilialModel, { foreignKey: "filialOrigenId", as: "filialOrigen" });
-CedulaDetalleModel.belongsTo(FilialModel, { foreignKey: "filialOtorganteId", as: "filialOtorgante" });
+CedulaDetalleModel.belongsTo(SucursalModel, { foreignKey: "sucursalOrigenId", as: "sucursalOrigen" });
+CedulaDetalleModel.belongsTo(SucursalModel, { foreignKey: "sucursalOtorganteId", as: "sucursalOtorgante" });
 
 
 
@@ -902,4 +1035,5 @@ export {
   SucursalModel,
   CanalComunicacionModel,
   ServicioObservacionModel,
+  SettingsModel,
 };

@@ -36,8 +36,8 @@ export class ServicioService {
     return await ServicioModel.findAll({
       order: [["fo_Fecha_Servicio", "DESC"]],
       include: [
-        { association: "filialOtorgante" },
-        { association: "filialOrigen" },
+        { association: "sucursalOtorgante" },
+        { association: "sucursalOrigen" },
         { association: "tipoDocumento" },
         { association: "statusContrato" },
         { association: "tipoServicio" },
@@ -69,8 +69,8 @@ export class ServicioService {
       },
       order: [["fo_Fecha_Servicio", "DESC"]],
       include: [
-        { association: "filialOtorgante" },
-        { association: "filialOrigen" },
+        { association: "sucursalOtorgante" },
+        { association: "sucursalOrigen" },
         { association: "tipoDocumento" },
         { association: "statusContrato" },
         { association: "tipoServicio" },
@@ -92,8 +92,8 @@ export class ServicioService {
       },
       order: [["fo_Fecha_Servicio", "DESC"]],
       include: [
-        { association: "filialOtorgante" },
-        { association: "filialOrigen" },
+        { association: "sucursalOtorgante" },
+        { association: "sucursalOrigen" },
         { association: "tipoDocumento" },
         { association: "statusContrato" },
         { association: "tipoServicio" },
@@ -210,8 +210,8 @@ export class ServicioService {
   async getById(id: number) {
     return await ServicioModel.findByPk(id, {
       include: [
-        { association: "filialOtorgante" },
-        { association: "filialOrigen" },
+        { association: "sucursalOtorgante" },
+        { association: "sucursalOrigen" },
         { association: "tipoDocumento" },
         { association: "statusContrato" },
         { association: "tipoServicio" },

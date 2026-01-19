@@ -33,3 +33,43 @@ export const eliminarCedulas = async (req: Request, res: Response) => {
     handleHttp(res, error);
   }
 };
+
+export const getCedulasByPeriodo = async (req: Request, res: Response) => {
+  try {
+    const periodoId = Number(req.params.periodoId);
+
+    if (!periodoId) {
+      return res
+        .status(400)
+        .json({ success: false, message: "El periodoId es requerido." });
+    }
+
+    const data = await service.getCedulasByPeriodo(periodoId);
+    res.json({ success: true, data });
+  } catch (error) {
+    handleHttp(res, error);
+  }
+};
+
+export const getCedulaById = async (req: Request, res: Response) => {
+  try {
+    const id = Number(req.params.id);
+
+    if (!id) {
+      return res
+        .status(400)
+        .json({ success: false, message: "El id de la cédula es requerido." });
+    }
+
+    const data = await service.getCedulaById(id);
+    if (!data) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Cédula no encontrada." });
+    }
+
+    res.json({ success: true, data });
+  } catch (error) {
+    handleHttp(res, error);
+  }
+};
