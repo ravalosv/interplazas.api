@@ -84,11 +84,6 @@ export class CedulaService {
     // 6. Generar Cédulas por Filial
     const results = [];
 
-    // Filtrar filiales extranjeras del conjunto de IDs para no generarles cédula
-    for (const id of foreignFilialIds) {
-      filialIds.delete(id);
-    }
-
     for (const filialId of filialIds) {
       const filial = filialesMap.get(filialId);
       if (!filial) continue;
@@ -115,11 +110,6 @@ export class CedulaService {
           continue;
         }
 
-        // Ignorar servicios que involucren filiales extranjeras
-        if (foreignFilialIds.has(filialOtorganteId) || foreignFilialIds.has(filialOrigenId)) {
-          continue;
-        }
-
         // Ignorar servicios internos (misma filial origen y otorgante)
         if (filialOtorganteId === filialOrigenId) {
           continue;
@@ -141,18 +131,27 @@ export class CedulaService {
           cobroGrupo = false;
         }
 
-        const monto =
-          servicio.penalizado || !cobroGrupo
+        const isForeign =
+          foreignFilialIds.has(filialOtorganteId) ||
+          foreignFilialIds.has(filialOrigenId);
+
+        const monto = isForeign
+          ? servicio.penalizado
             ? 0
-            : Number(servicio.concepto?.montoMXN || 0);
+            : Number(servicio.concepto?.montoUSD || 0)
+          : servicio.penalizado || !cobroGrupo
+          ? 0
+          : Number(servicio.concepto?.montoMXN || 0);
 
         // Servicios donde la filial es Otorgante -> tipo FAVOR
         if (filialOtorganteId === filialId) {
-          subTotalFavor += monto;
+          if (!isForeign) {
+            subTotalFavor += monto;
+          }
 
           detallesToCreate.push({
             servicioId: servicio.id,
-            tipo: "FAVOR",
+            tipo: isForeign ? "USA" : "FAVOR",
             sucursalOrigenNombre: sucursalOrigen.nombre,
             monto,
             sucursalOrigenId: sucursalOrigenId,
@@ -180,11 +179,13 @@ export class CedulaService {
 
         // Servicios donde la filial es Origen -> tipo PAGAR
         if (filialOrigenId === filialId) {
-          subTotalPagar += monto;
+          if (!isForeign) {
+            subTotalPagar += monto;
+          }
 
           detallesToCreate.push({
             servicioId: servicio.id,
-            tipo: "PAGAR",
+            tipo: isForeign ? "USA" : "PAGAR",
             sucursalOrigenNombre: sucursalOrigen.nombre,
             monto,
             sucursalOrigenId: sucursalOrigenId,
@@ -212,7 +213,9 @@ export class CedulaService {
       }
 
       if (detallesToCreate.length > 0) {
-        const totalUsa = 0;
+        const totalUsa = detallesToCreate
+          .filter((d) => d.tipo === "USA")
+          .reduce((acc, d) => acc + Number(d.monto || 0), 0);
         const totalComisiones = subTotalFavor - subTotalPagar;
         const comisionPFCalculada = subTotalFavor * comisionPFSetting;
         const saldosEfectivamenteCobradosFavor = detallesToCreate
