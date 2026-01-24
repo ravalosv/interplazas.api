@@ -6,10 +6,10 @@ export interface ICedula {
   filialNombre?: string;
   grupoId?: number;
   grupoNombre?: string;
-  totalFavor: number;
-  totalPagar: number;
+  subTotalFavor: number;
+  subTotalPagar: number;
   totalUsa: number;
-  totalNeto: number;
+  totalComisiones: number;
   comisionPF: number;
   saldosEfectivamenteCobradosFavor: number;
   saldosEfectivamenteCobradosPagar: number;
@@ -37,7 +37,11 @@ export interface ICedulaDetalle {
   monto: number;
   saldoPABS: number;
   observacion?: string;
+  penalizado?: boolean;
+  esFilialesHermanas?: boolean;
   saldoEfectivamenteCobrado: number;
+  montoDevuelto?: number;
+  aceptaConvenio?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
 }

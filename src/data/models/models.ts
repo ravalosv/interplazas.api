@@ -405,7 +405,7 @@ class ServicioModel extends Model<IServicio> implements IServicio {
   public exp_Convenio_Status_Id!: number;
   public exp_Convenio_url!: string;
   public exp_Enviado_Grupo_Whats!: boolean;
-  public exp_Motivo_De_No_Otorgado_Id!: number;
+  public exp_Motivo_De_No_Otorgado_Id!: number | null;
   public exp_Expediente_Completo!: string;
   public exp_Observaciones_cierre!: string;
   public penalizado!: boolean;
@@ -646,10 +646,10 @@ class CedulaModel extends Model<ICedula> implements ICedula {
   public filialNombre!: string;
   public grupoId!: number;
   public grupoNombre!: string;
-  public totalFavor!: number;
-  public totalPagar!: number;
+  public subTotalFavor!: number;
+  public subTotalPagar!: number;
   public totalUsa!: number;
-  public totalNeto!: number;
+  public totalComisiones!: number;
   public comisionPF!: number;
   public saldosEfectivamenteCobradosFavor!: number;
   public saldosEfectivamenteCobradosPagar!: number;
@@ -690,12 +690,12 @@ CedulaModel.init(
       type: DataTypes.STRING,
       allowNull: true,
     },
-    totalFavor: {
+    subTotalFavor: {
       type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
       defaultValue: 0,
     },
-    totalPagar: {
+    subTotalPagar: {
       type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
       defaultValue: 0,
@@ -705,7 +705,7 @@ CedulaModel.init(
       allowNull: false,
       defaultValue: 0,
     },
-    totalNeto: {
+    totalComisiones: {
       type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
       defaultValue: 0,
@@ -762,7 +762,11 @@ class CedulaDetalleModel extends Model<ICedulaDetalle> implements ICedulaDetalle
   public conceptoNombre!: string;
   public saldoPABS!: number;
   public observacion!: string;
+  public penalizado!: boolean;
+  public esFilialesHermanas!: boolean;
   public saldoEfectivamenteCobrado!: number;
+  public montoDevuelto!: number;
+  public aceptaConvenio!: boolean;
 }
 
 CedulaDetalleModel.init(
@@ -841,8 +845,26 @@ CedulaDetalleModel.init(
       type: DataTypes.STRING,
       allowNull: true,
     },
+    penalizado: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
+    esFilialesHermanas: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
     saldoEfectivamenteCobrado: {
       type: DataTypes.DECIMAL(10, 2),
+      allowNull: true,
+    },
+    montoDevuelto: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: true,
+    },
+    aceptaConvenio: {
+      type: DataTypes.BOOLEAN,
       allowNull: true,
     },
   },

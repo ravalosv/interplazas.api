@@ -29,12 +29,12 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE'
       },
-      totalFavor: {
+      subTotalFavor: {
         type: Sequelize.DECIMAL(10, 2),
         allowNull: false,
         defaultValue: 0
       },
-      totalPagar: {
+      subTotalPagar: {
         type: Sequelize.DECIMAL(10, 2),
         allowNull: false,
         defaultValue: 0
@@ -44,7 +44,7 @@ module.exports = {
         allowNull: false,
         defaultValue: 0
       },
-      totalNeto: {
+      totalComisiones: {
         type: Sequelize.DECIMAL(10, 2),
         allowNull: false,
         defaultValue: 0

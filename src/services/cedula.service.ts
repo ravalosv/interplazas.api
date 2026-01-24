@@ -35,7 +35,13 @@ export class CedulaService {
 
     // 4. Obtener Servicios
     const servicios = await ServicioModel.findAll({
-      where: { PeriodoId: periodo.id },
+      where: {
+        PeriodoId: periodo.id,
+        [Op.or]: [
+          { exp_Motivo_De_No_Otorgado_Id: 6 },
+          { exp_Motivo_De_No_Otorgado_Id: null },
+        ],
+      },
       include: [
         { association: "sucursalOtorgante" },
         { association: "sucursalOrigen" },
@@ -87,8 +93,8 @@ export class CedulaService {
       const filial = filialesMap.get(filialId);
       if (!filial) continue;
 
-      let totalFavor = 0;
-      let totalPagar = 0;
+      let subTotalFavor = 0;
+      let subTotalPagar = 0;
 
       const detallesToCreate: any[] = [];
 
@@ -119,11 +125,30 @@ export class CedulaService {
           continue;
         }
 
-        const monto = Number(servicio.concepto?.montoMXN || 0);
+        let cobroGrupo = true;
+        const filialOtorgante = filialesMap.get(filialOtorganteId);
+        const filialOrigen = filialesMap.get(filialOrigenId);
+
+        const grupoOtorgante = (filialOtorgante as any)?.grupo;
+        const grupoOrigen = (filialOrigen as any)?.grupo;
+
+        if (
+          grupoOtorgante &&
+          grupoOrigen &&
+          grupoOtorgante.id === grupoOrigen.id &&
+          grupoOtorgante.cobroEntreFiliales === false
+        ) {
+          cobroGrupo = false;
+        }
+
+        const monto =
+          servicio.penalizado || !cobroGrupo
+            ? 0
+            : Number(servicio.concepto?.montoMXN || 0);
 
         // Servicios donde la filial es Otorgante -> tipo FAVOR
         if (filialOtorganteId === filialId) {
-          totalFavor += monto;
+          subTotalFavor += monto;
 
           detallesToCreate.push({
             servicioId: servicio.id,
@@ -144,12 +169,18 @@ export class CedulaService {
             saldoEfectivamenteCobrado: Number(
               servicio.fo_Contrato_Monto_Recuperado || 0
             ),
+            penalizado: servicio.penalizado || false,
+            esFilialesHermanas: !cobroGrupo,
+            montoDevuelto: Number(servicio.fo_Monto_Devuelto || 0),
+            aceptaConvenio:
+              Number(servicio.fo_Contrato_Monto_Convenio || 0) > 0 &&
+              (servicio.fori_Acepta_Convenio || false),
           });
         }
 
         // Servicios donde la filial es Origen -> tipo PAGAR
         if (filialOrigenId === filialId) {
-          totalPagar += monto;
+          subTotalPagar += monto;
 
           detallesToCreate.push({
             servicioId: servicio.id,
@@ -170,14 +201,20 @@ export class CedulaService {
             saldoEfectivamenteCobrado: Number(
               servicio.fo_Contrato_Monto_Recuperado || 0
             ),
+            penalizado: servicio.penalizado || false,
+            esFilialesHermanas: !cobroGrupo,
+            montoDevuelto: Number(servicio.fo_Monto_Devuelto || 0),
+            aceptaConvenio:
+              Number(servicio.fo_Contrato_Monto_Convenio || 0) > 0 &&
+              (servicio.fori_Acepta_Convenio || false),
           });
         }
       }
 
       if (detallesToCreate.length > 0) {
         const totalUsa = 0;
-        const totalNeto = totalFavor - totalPagar;
-        const comisionPFCalculada = totalFavor * comisionPFSetting;
+        const totalComisiones = subTotalFavor - subTotalPagar;
+        const comisionPFCalculada = subTotalFavor * comisionPFSetting;
         const saldosEfectivamenteCobradosFavor = detallesToCreate
           .filter((d) => d.tipo === "FAVOR")
           .reduce((acc, d) => acc + Number(d.saldoEfectivamenteCobrado || 0), 0);
@@ -186,9 +223,10 @@ export class CedulaService {
           .reduce((acc, d) => acc + Number(d.saldoEfectivamenteCobrado || 0), 0);
         const saldosEfectivamenteCobradosTotal =
           saldosEfectivamenteCobradosPagar - saldosEfectivamenteCobradosFavor;
-        const totalFinal = totalNeto + saldosEfectivamenteCobradosTotal;
+        //const totalComisiones = totalNeto
+        const totalFinal = totalComisiones + saldosEfectivamenteCobradosTotal;
 
-        console.log("Creando cédula para periodo:", periodo.nombre, "ID:", periodo.id);
+        console.log("Creando cédula para periodo:", periodo.nombre, "Sucursal:", filial.nombre);
 
         const cedula = await CedulaModel.create({
           periodoId: periodo.id,
@@ -197,10 +235,10 @@ export class CedulaService {
           filialNombre: filial.nombre,
           grupoId: (filial as any).grupo?.id,
           grupoNombre: (filial as any).grupo?.nombre,
-          totalFavor: totalFavor,
-          totalPagar: totalPagar,
+          subTotalFavor: subTotalFavor,
+          subTotalPagar: subTotalPagar,
           totalUsa: totalUsa,
-          totalNeto: totalNeto,
+          totalComisiones: totalComisiones,
           comisionPF: comisionPFCalculada,
           saldosEfectivamenteCobradosFavor,
           saldosEfectivamenteCobradosPagar,

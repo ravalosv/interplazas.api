@@ -31,7 +31,7 @@ export interface IServicio {
   exp_Convenio_Status_Id: number; // EstadoCtaStatusModel
   exp_Convenio_url: string;
   exp_Enviado_Grupo_Whats: boolean;
-  exp_Motivo_De_No_Otorgado_Id: number; // MotivoNoOtorgadoModel
+  exp_Motivo_De_No_Otorgado_Id: number | null; // MotivoNoOtorgadoModel
   exp_Expediente_Completo: string;
   exp_Observaciones_cierre: string;
   penalizado: boolean;
