@@ -654,6 +654,7 @@ class CedulaModel extends Model<ICedula> implements ICedula {
   public saldosEfectivamenteCobradosFavor!: number;
   public saldosEfectivamenteCobradosPagar!: number;
   public saldosEfectivamenteCobradosTotal!: number;
+  public totalMontoContrato!: number;
   public totalFinal!: number;
 }
 
@@ -730,6 +731,11 @@ CedulaModel.init(
       allowNull: false,
       defaultValue: 0,
     },
+    totalMontoContrato: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: false,
+      defaultValue: 0,
+    },
     totalFinal: {
       type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
@@ -765,6 +771,7 @@ class CedulaDetalleModel extends Model<ICedulaDetalle> implements ICedulaDetalle
   public penalizado!: boolean;
   public esFilialesHermanas!: boolean;
   public saldoEfectivamenteCobrado!: number;
+  public montoEnContrato!: number;
   public montoDevuelto!: number;
   public aceptaConvenio!: boolean;
 }
@@ -858,6 +865,11 @@ CedulaDetalleModel.init(
     saldoEfectivamenteCobrado: {
       type: DataTypes.DECIMAL(10, 2),
       allowNull: true,
+    },
+    montoEnContrato: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: false,
+      defaultValue: 0,
     },
     montoDevuelto: {
       type: DataTypes.DECIMAL(10, 2),

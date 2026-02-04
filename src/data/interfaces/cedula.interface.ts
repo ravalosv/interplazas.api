@@ -14,6 +14,7 @@ export interface ICedula {
   saldosEfectivamenteCobradosFavor: number;
   saldosEfectivamenteCobradosPagar: number;
   saldosEfectivamenteCobradosTotal: number;
+  totalMontoContrato: number;
   totalFinal: number;
   createdAt?: Date;
   updatedAt?: Date;
@@ -40,6 +41,7 @@ export interface ICedulaDetalle {
   penalizado?: boolean;
   esFilialesHermanas?: boolean;
   saldoEfectivamenteCobrado: number;
+  montoEnContrato: number;
   montoDevuelto?: number;
   aceptaConvenio?: boolean;
   createdAt?: Date;
