@@ -15,10 +15,10 @@ export const getFilialById = async (id: number) => {
   return filial.toJSON();
 };
 
-export const createFilial = async ({ nombre, extranjera, grupoId }: IFilial) => {
+export const createFilial = async ({ nombre, extranjera, grupoId, apiUrl, apiKey }: IFilial) => {
   const t = await FilialModel.sequelize!.transaction();
   try {
-    const nueva = await FilialModel.create({ nombre, extranjera, grupoId }, { transaction: t });
+    const nueva = await FilialModel.create({ nombre, extranjera, grupoId, apiUrl, apiKey }, { transaction: t });
     await t.commit();
     return nueva.toJSON();
   } catch (error) {
@@ -27,14 +27,14 @@ export const createFilial = async ({ nombre, extranjera, grupoId }: IFilial) => 
   }
 };
 
-export const updateFilial = async (id: number, { nombre, extranjera, grupoId }: Partial<IFilial>) => {
+export const updateFilial = async (id: number, { nombre, extranjera, grupoId, apiUrl, apiKey }: Partial<IFilial>) => {
   const t = await FilialModel.sequelize!.transaction();
   try {
     const filial = await FilialModel.findByPk(id);
     if (!filial) throw new Error("FILIAL_NOT_FOUND");
 
     const actualizada = await filial.update(
-      { nombre, extranjera, grupoId },
+      { nombre, extranjera, grupoId, apiUrl, apiKey },
       { transaction: t }
     );
     await t.commit();
