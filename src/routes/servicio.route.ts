@@ -7,6 +7,7 @@ import {
   getServicioById,
   updateServicio,
   updatePenalizadoStatus,
+  changePeriod,
   deleteServicio,
   uploadDocument,
   deleteDocument,
@@ -28,6 +29,7 @@ router.put("/:id", checkJwt, updateServicio);
 router.post("/:id/upload", checkJwt, multerMiddleware.single("file"), uploadDocument);
 router.delete("/:id/document/:fieldName", checkJwt, deleteDocument);
 router.patch("/:id/penalizado", checkJwt, updatePenalizadoStatus);
+router.patch("/:id/change-period", checkJwt, changePeriod);
 router.get("/:id/observaciones", checkJwt, getServicioObservaciones);
 router.post("/:id/observaciones", checkJwt, createServicioObservacion);
 router.delete("/:id/observaciones/:observacionId", checkJwt, deleteServicioObservacion);

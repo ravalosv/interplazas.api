@@ -5,7 +5,7 @@ import * as fs from "fs";
 import * as path from "path";
 
 export class ServicioService {
-  private calculatePenalizado(fechaServicio: string | Date): boolean {
+  private calculatePenalizado(fechaServicio: string | Date, referenceDate: Date = new Date()): boolean {
     // Si viene como string 'YYYY-MM-DD' (DATEONLY), lo parseamos manualmente para evitar UTC shift
     let serviceDate: Date;
     
@@ -18,7 +18,7 @@ export class ServicioService {
       serviceDate = new Date(fechaServicio);
     }
 
-    const currentDate = new Date();
+    const currentDate = referenceDate;
 
     const serviceYear = serviceDate.getFullYear();
     const serviceMonth = serviceDate.getMonth();
@@ -251,6 +251,36 @@ export class ServicioService {
     const record = await ServicioModel.findByPk(id);
     if (!record) return null;
     return await record.update({ penalizado });
+  }
+
+  async changePeriod(id: number, newPeriodoId: number) {
+    const servicio = await ServicioModel.findByPk(id, { include: ["periodo"] });
+    if (!servicio) throw new Error("Servicio no encontrado");
+
+    // @ts-ignore
+    if (servicio.periodo && !servicio.periodo.activo) {
+      throw new Error("El periodo actual del servicio está cerrado.");
+    }
+
+    const newPeriodo = await PeriodoModel.findByPk(newPeriodoId);
+    if (!newPeriodo) throw new Error("Periodo destino no encontrado");
+    if (!newPeriodo.activo) throw new Error("El periodo destino está cerrado.");
+
+    // @ts-ignore
+    if (servicio.PeriodoId === newPeriodo.id) {
+      throw new Error("El periodo destino no puede ser el mismo que el actual.");
+    }
+
+    // Calculate penalized based on new period
+    // Create reference date from newPeriodo (use 1st day of the month)
+    const referenceDate = new Date(newPeriodo.anio, newPeriodo.mes - 1, 1);
+    
+    const penalizado = this.calculatePenalizado(servicio.fo_Fecha_Servicio, referenceDate);
+
+    return await servicio.update({
+      PeriodoId: newPeriodo.id,
+      penalizado
+    });
   }
 
   async delete(id: number) {

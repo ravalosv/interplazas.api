@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   getPeriodos,
+  createPeriodo,
   cerrarPeriodo,
   abrirPeriodo,
 } from "../controller/periodo.controller";
@@ -15,6 +16,7 @@ import { checkJwt } from "../core/middleware/session.middleware";
 const router = Router();
 
 router.get("/", checkJwt, getPeriodos);
+router.post("/", checkJwt, createPeriodo);
 router.patch("/:id/cerrar", checkJwt, cerrarPeriodo);
 router.patch("/:id/abrir", checkJwt, abrirPeriodo);
 router.post("/crear_cedulas", checkJwt, crearCedulas);

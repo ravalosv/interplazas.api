@@ -15,6 +15,27 @@ export class PeriodoService {
     });
   }
 
+  async create(mes: number, anio: number) {
+    // Helper para nombre del mes en español
+    const monthNames = [
+      "ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO",
+      "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"
+    ];
+    const nombre = `${monthNames[mes - 1]} ${anio}`;
+    
+    const [periodo] = await PeriodoModel.findOrCreate({
+      where: { mes, anio },
+      defaults: {
+        mes,
+        anio,
+        nombre,
+        activo: true
+      }
+    });
+    
+    return periodo;
+  }
+
   async cerrarPeriodo(id: number) {
     const periodo = await PeriodoModel.findByPk(id);
     if (!periodo) return null;

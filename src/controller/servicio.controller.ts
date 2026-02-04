@@ -94,6 +94,19 @@ export const updatePenalizadoStatus = async (req: Request, res: Response) => {
   }
 };
 
+export const changePeriod = async (req: Request, res: Response) => {
+  try {
+    const { periodoId } = req.body;
+    if (!periodoId) {
+      return res.status(400).json({ success: false, message: "Field 'periodoId' is required" });
+    }
+    const data = await service.changePeriod(Number(req.params.id), Number(periodoId));
+    res.json({ success: true, data });
+  } catch (error) {
+    handleHttp(res, error);
+  }
+};
+
 export const deleteServicio = async (req: Request, res: Response) => {
   try {
     const success = await service.delete(Number(req.params.id));

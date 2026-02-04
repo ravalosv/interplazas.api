@@ -13,6 +13,19 @@ export const getPeriodos = async (req: Request, res: Response) => {
   }
 };
 
+export const createPeriodo = async (req: Request, res: Response) => {
+  try {
+    const { mes, anio } = req.body;
+    if (!mes || !anio) {
+      return res.status(400).json({ success: false, message: "Mes y Año son requeridos" });
+    }
+    const data = await service.create(Number(mes), Number(anio));
+    res.json({ success: true, data });
+  } catch (error) {
+    handleHttp(res, error);
+  }
+};
+
 export const cerrarPeriodo = async (req: Request, res: Response) => {
   try {
     const id = Number(req.params.id);
