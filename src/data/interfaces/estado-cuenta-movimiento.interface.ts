@@ -11,6 +11,9 @@ export interface IEstadoCuentaMovimiento {
   grupoId?: number | null;
   filialId?: number | null;
   sucursalId?: number | null;
+  grupoNombre?: string | null;
+  filialNombre?: string | null;
+  sucursalNombre?: string | null;
   observacion?: string;
   referencia?: string;
   usuarioId?: number | null;

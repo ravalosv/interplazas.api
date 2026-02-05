@@ -674,6 +674,8 @@ class CedulaModel extends Model<ICedula> implements ICedula {
   public saldosEfectivamenteCobradosTotal!: number;
   public totalMontoContrato!: number;
   public totalFinal!: number;
+  public filial?: FilialModel;
+  public grupo?: IGrupo;
 }
 
 CedulaModel.init(

@@ -14,6 +14,9 @@ export class EstadoCuentaMovimientoModel extends Model<IEstadoCuentaMovimiento> 
   public grupoId!: number | null;
   public filialId!: number | null;
   public sucursalId!: number | null;
+  public grupoNombre!: string | null;
+  public filialNombre!: string | null;
+  public sucursalNombre!: string | null;
   public observacion!: string;
   public referencia!: string;
   public usuarioId!: number | null;
@@ -83,6 +86,18 @@ export const initEstadoCuentaMovimientoModel = (sequelize: any) => {
         type: DataTypes.INTEGER,
         allowNull: true,
         references: { model: 'sucursales', key: 'id' },
+      },
+      grupoNombre: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      filialNombre: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      sucursalNombre: {
+        type: DataTypes.STRING,
+        allowNull: true,
       },
       observacion: {
         type: DataTypes.STRING,

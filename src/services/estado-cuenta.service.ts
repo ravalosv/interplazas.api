@@ -34,7 +34,11 @@ export class EstadoCuentaService {
 
     // 3. Obtener Cédulas del Periodo
     const cedulas = await CedulaModel.findAll({
-      where: { periodoId }
+      where: { periodoId },
+      include: [
+        { association: "filial" },
+        { association: "grupo" }
+      ]
     });
 
     if (cedulas.length === 0) {
@@ -60,6 +64,9 @@ export class EstadoCuentaService {
           grupoId: cedula.grupoId,
           filialId: cedula.filialId,
           sucursalId: null, // Cédula es por filial
+          grupoNombre: cedula.grupo?.nombre,
+          filialNombre: cedula.filial?.nombre,
+          sucursalNombre: null,
           observacion: `GEC - Periodo ${periodo.mes} ${periodo.anio}`,
           referencia: `EC-${periodo.anio}-${periodo.mes}-${cedula.id}`,
           usuarioId: usuarioId
