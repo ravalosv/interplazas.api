@@ -45,13 +45,13 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        nombre: 'ABONO',
-        naturaleza: -1, // Acreedora
+        nombre: 'ABONO DE GRUPO',
+        naturaleza: 1, // Acreedora
         createdAt: new Date(),
         updatedAt: new Date(),
       },
       {
-        nombre: 'PAGO',
+        nombre: 'PAGO A GRUPO',
         naturaleza: -1, // Acreedora
         createdAt: new Date(),
         updatedAt: new Date(),

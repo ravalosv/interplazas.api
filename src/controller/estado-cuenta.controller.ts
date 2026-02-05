@@ -34,3 +34,41 @@ export const getMovimientos = async (req: Request, res: Response) => {
     res.status(500).json(ApiReturn.error(error.message));
   }
 };
+
+export const getTiposMovimiento = async (req: Request, res: Response) => {
+  try {
+    const data = await service.getTiposMovimiento();
+    res.json(ApiReturn.success(data));
+  } catch (error: any) {
+    res.status(500).json(ApiReturn.error(error.message));
+  }
+};
+
+export const createMovimiento = async (req: RequestExt, res: Response) => {
+  try {
+    // @ts-ignore
+    const usuarioId = req.user?.id;
+    if (!usuarioId) {
+        return res.status(401).json(ApiReturn.error("Usuario no autenticado."));
+    }
+    const data = await service.createMovimiento(req.body, usuarioId);
+    res.json(ApiReturn.success(data, "Movimiento creado exitosamente."));
+  } catch (error: any) {
+    res.status(500).json(ApiReturn.error(error.message));
+  }
+};
+
+export const updateMovimiento = async (req: RequestExt, res: Response) => {
+  try {
+    // @ts-ignore
+    const usuarioId = req.user?.id;
+    if (!usuarioId) {
+      return res.status(401).json(ApiReturn.error("Usuario no autenticado."));
+    }
+    const { id } = req.params as any;
+    const movimiento = await service.updateMovimiento(Number(id), req.body, usuarioId);
+    res.json(ApiReturn.success(movimiento, "Movimiento actualizado exitosamente."));
+  } catch (error: any) {
+    res.status(500).json(ApiReturn.error(error.message));
+  }
+};

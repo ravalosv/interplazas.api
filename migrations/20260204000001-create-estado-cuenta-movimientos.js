@@ -16,7 +16,7 @@ module.exports = {
         defaultValue: Sequelize.NOW,
       },
       tipo: {
-        type: Sequelize.ENUM('SALDO_INICIAL', 'SALDO_MENSUAL', 'ABONO', 'PAGO'),
+        type: Sequelize.ENUM('SALDO_INICIAL', 'SALDO_MENSUAL', 'ABONO DE GRUPO', 'PAGO A GRUPO'),
         allowNull: false,
       },
       montoMXN: {
