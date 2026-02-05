@@ -51,10 +51,10 @@ export class EstadoCuentaService {
         return {
           fecha: fechaFinPeriodo, // Fecha fin del periodo
           tipoMovimientoId: tipoMovimiento.id,
-          montoMXN: cedula.totalFinal,
-          montoUSD: cedula.totalUsa,
-          montoMXNConSigno: Number(cedula.totalFinal) * naturaleza,
-          montoUSDConSigno: Number(cedula.totalUsa) * naturaleza,
+          montoMXNAbs: Math.abs(Number(cedula.totalFinal)),
+          montoUSDAbs: Math.abs(Number(cedula.totalUsa)),
+          montoMXN: Number(cedula.totalFinal),
+          montoUSD: Number(cedula.totalUsa),
           periodoId: periodo.id,
           cedulaId: cedula.id,
           grupoId: cedula.grupoId,

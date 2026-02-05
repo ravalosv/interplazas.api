@@ -2,10 +2,10 @@ export interface IEstadoCuentaMovimiento {
   id?: number;
   fecha: Date | string;
   tipoMovimientoId?: number | null;
+  montoMXNAbs: number;
+  montoUSDAbs: number;
   montoMXN: number;
   montoUSD: number;
-  montoMXNConSigno: number;
-  montoUSDConSigno: number;
   periodoId?: number | null;
   cedulaId?: number | null;
   grupoId?: number | null;

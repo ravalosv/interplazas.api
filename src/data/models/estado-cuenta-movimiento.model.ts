@@ -5,10 +5,10 @@ export class EstadoCuentaMovimientoModel extends Model<IEstadoCuentaMovimiento> 
   public id!: number;
   public fecha!: Date | string;
   public tipoMovimientoId!: number | null;
+  public montoMXNAbs!: number;
+  public montoUSDAbs!: number;
   public montoMXN!: number;
   public montoUSD!: number;
-  public montoMXNConSigno!: number;
-  public montoUSDConSigno!: number;
   public periodoId!: number | null;
   public cedulaId!: number | null;
   public grupoId!: number | null;
@@ -39,22 +39,22 @@ export const initEstadoCuentaMovimientoModel = (sequelize: any) => {
         allowNull: true,
         references: { model: 'tipo_movimientos_estado_cuenta', key: 'id' },
       },
+      montoMXNAbs: {
+        type: DataTypes.DECIMAL(10, 2),
+        allowNull: false,
+        defaultValue: 0,
+      },
+      montoUSDAbs: {
+        type: DataTypes.DECIMAL(10, 2),
+        allowNull: false,
+        defaultValue: 0,
+      },
       montoMXN: {
         type: DataTypes.DECIMAL(10, 2),
         allowNull: false,
         defaultValue: 0,
       },
       montoUSD: {
-        type: DataTypes.DECIMAL(10, 2),
-        allowNull: false,
-        defaultValue: 0,
-      },
-      montoMXNConSigno: {
-        type: DataTypes.DECIMAL(10, 2),
-        allowNull: false,
-        defaultValue: 0,
-      },
-      montoUSDConSigno: {
         type: DataTypes.DECIMAL(10, 2),
         allowNull: false,
         defaultValue: 0,
