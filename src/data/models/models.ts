@@ -1064,6 +1064,7 @@ PeriodoModel.hasMany(CedulaModel, { foreignKey: "periodoId", as: "cedulas" });
 
 CedulaModel.belongsTo(PeriodoModel, { foreignKey: "periodoId", as: "periodo" });
 CedulaModel.belongsTo(FilialModel, { foreignKey: "filialId", as: "filial" });
+CedulaModel.belongsTo(GrupoModel, { foreignKey: "grupoId", as: "grupo" });
 CedulaModel.hasMany(CedulaDetalleModel, { foreignKey: "cedulaId", as: "detalles" });
 
 CedulaDetalleModel.belongsTo(CedulaModel, { foreignKey: "cedulaId", as: "cedula" });
