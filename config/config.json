@@ -5,6 +5,9 @@
     "database": "serviciosCCI",
     "host": "localhost",
     "dialect": "mariadb",
+    "dialectOptions": {
+      "allowPublicKeyRetrieval": true
+    },
     "migrationStorageTableName": "_migrations"
   },
   "test": {

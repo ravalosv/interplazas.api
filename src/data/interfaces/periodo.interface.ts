@@ -4,4 +4,6 @@ export interface IPeriodo {
   anio: number;
   nombre: string; // E.g., "ENERO 2025"
   activo: boolean; // Para futuro control de cierre de periodos
+  estadoCuentaGenerado: boolean;
+  createdAt?: Date;
 }

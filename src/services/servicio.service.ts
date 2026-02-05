@@ -123,7 +123,8 @@ export class ServicioService {
         mes,
         anio,
         nombre: nombrePeriodo,
-        activo: true
+        activo: true,
+        estadoCuentaGenerado: false
       }
     });
 

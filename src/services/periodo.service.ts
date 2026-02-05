@@ -1,4 +1,4 @@
-import { PeriodoModel, CedulaModel } from "../data/models/models";
+import { PeriodoModel, CedulaModel, EstadoCuentaMovimientoModel } from "../data/models/models";
 import { IPeriodo } from "../data/interfaces/periodo.interface";
 
 export class PeriodoService {
@@ -29,7 +29,8 @@ export class PeriodoService {
         mes,
         anio,
         nombre,
-        activo: true
+        activo: true,
+        estadoCuentaGenerado: false
       }
     });
     
@@ -46,9 +47,31 @@ export class PeriodoService {
     const periodo = await PeriodoModel.findByPk(id);
     if (!periodo) return null;
 
-    // Eliminar cédulas asociadas al abrir el periodo
-    await CedulaModel.destroy({ where: { periodoId: id } });
+    const t = await PeriodoModel.sequelize!.transaction();
 
-    return await periodo.update({ activo: true });
+    try {
+      // Eliminar movimientos de estado de cuenta asociados al periodo
+      await EstadoCuentaMovimientoModel.destroy({
+        where: { periodoId: id },
+        transaction: t
+      });
+
+      // Eliminar cédulas asociadas al abrir el periodo
+      await CedulaModel.destroy({ 
+        where: { periodoId: id },
+        transaction: t
+      });
+
+      const updatedPeriodo = await periodo.update({ 
+        activo: true,
+        estadoCuentaGenerado: false
+      }, { transaction: t });
+
+      await t.commit();
+      return updatedPeriodo;
+    } catch (error) {
+      await t.rollback();
+      throw error;
+    }
   }
 }

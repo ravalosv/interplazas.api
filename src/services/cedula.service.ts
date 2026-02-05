@@ -286,12 +286,16 @@ export class CedulaService {
   }
 
   async eliminarCedulas(anio: number, mes: number) {
-      const periodo = await PeriodoModel.findOne({ where: { anio, mes } });
-      if (!periodo) {
-        throw new Error("El periodo especificado no existe.");
-      }
-      
-      const count = await CedulaModel.destroy({
+    const periodo = await PeriodoModel.findOne({ where: { anio, mes } });
+    if (!periodo) {
+      throw new Error("El periodo especificado no existe.");
+    }
+
+    if (periodo.estadoCuentaGenerado) {
+      throw new Error("No se pueden eliminar las cédulas de un periodo que ya tiene estado de cuenta generado.");
+    }
+    
+    const count = await CedulaModel.destroy({
           where: { periodoId: periodo.id }
       });
       

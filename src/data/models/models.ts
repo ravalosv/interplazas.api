@@ -18,6 +18,8 @@ import { ISucursal } from "../interfaces/sucursal.interface";
 import { ICanalComunicacion } from "../interfaces/canal_comunicacion.interface";
 import { IServicioObservacion } from "../interfaces/servicio_observacion.interface";
 import { ISettings } from "../interfaces/settings.interface";
+import { EstadoCuentaMovimientoModel, initEstadoCuentaMovimientoModel } from './estado-cuenta-movimiento.model';
+import { TipoMovimientoEstadoCuentaModel, initTipoMovimientoEstadoCuentaModel } from './tipo-movimiento-estado-cuenta.model';
 
 
 // Define el modelo usando la interfaz
@@ -612,6 +614,7 @@ class PeriodoModel extends Model<IPeriodo> implements IPeriodo {
   public anio!: number;
   public nombre!: string;
   public activo!: boolean;
+  public estadoCuentaGenerado!: boolean;
 }
 
 PeriodoModel.init(
@@ -637,6 +640,11 @@ PeriodoModel.init(
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: true,
+    },
+    estadoCuentaGenerado: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
     },
   },
   {
@@ -898,6 +906,9 @@ CedulaDetalleModel.init(
   }
 );
 
+initEstadoCuentaMovimientoModel(interDB);
+initTipoMovimientoEstadoCuentaModel(interDB);
+
 
 class CostosModel extends Model<ICostos> implements ICostos {
   public id!: number;
@@ -1058,6 +1069,16 @@ CedulaDetalleModel.belongsTo(ServicioModel, { foreignKey: "servicioId", as: "ser
 CedulaDetalleModel.belongsTo(SucursalModel, { foreignKey: "sucursalOrigenId", as: "sucursalOrigen" });
 CedulaDetalleModel.belongsTo(SucursalModel, { foreignKey: "sucursalOtorganteId", as: "sucursalOtorgante" });
 
+EstadoCuentaMovimientoModel.belongsTo(PeriodoModel, { foreignKey: "periodoId", as: "periodo" });
+EstadoCuentaMovimientoModel.belongsTo(CedulaModel, { foreignKey: "cedulaId", as: "cedula" });
+EstadoCuentaMovimientoModel.belongsTo(GrupoModel, { foreignKey: "grupoId", as: "grupo" });
+EstadoCuentaMovimientoModel.belongsTo(FilialModel, { foreignKey: "filialId", as: "filial" });
+EstadoCuentaMovimientoModel.belongsTo(SucursalModel, { foreignKey: "sucursalId", as: "sucursal" });
+EstadoCuentaMovimientoModel.belongsTo(UserModel, { foreignKey: "usuarioId", as: "usuario" });
+EstadoCuentaMovimientoModel.belongsTo(TipoMovimientoEstadoCuentaModel, { foreignKey: "tipoMovimientoId", as: "tipoMovimiento" });
+
+GrupoModel.hasMany(EstadoCuentaMovimientoModel, { foreignKey: "grupoId", as: "movimientos" });
+FilialModel.hasMany(EstadoCuentaMovimientoModel, { foreignKey: "filialId", as: "movimientos" });
 
 
 export {
@@ -1074,6 +1095,8 @@ export {
   PeriodoModel,
   CedulaModel,
   CedulaDetalleModel,
+  EstadoCuentaMovimientoModel,
+  TipoMovimientoEstadoCuentaModel,
   CostosModel,
   GrupoModel,
   SucursalModel,
