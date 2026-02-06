@@ -90,6 +90,7 @@ export class CedulaService {
 
       let subTotalFavor = 0;
       let subTotalPagar = 0;
+      let totalUsa = 0;
 
       const detallesToCreate: any[] = [];
 
@@ -152,7 +153,9 @@ export class CedulaService {
             montoFavor = 0;
           }
 
-          if (!isForeign) {
+          if (isForeign) {
+            totalUsa += rawMonto;
+          } else {
             subTotalFavor += montoFavor;
           }
 
@@ -191,7 +194,9 @@ export class CedulaService {
           }
           // Penalized check removed for PAGAR
 
-          if (!isForeign) {
+          if (isForeign) {
+            totalUsa -= rawMonto;
+          } else {
             subTotalPagar += montoPagar;
           }
 
@@ -224,9 +229,6 @@ export class CedulaService {
       }
 
       if (detallesToCreate.length > 0) {
-        const totalUsa = detallesToCreate
-          .filter((d) => d.tipo === "USA")
-          .reduce((acc, d) => acc + Number(d.monto || 0), 0);
         const totalComisiones = subTotalFavor - subTotalPagar;
 
         const totalMontoContratoFavor = detallesToCreate
