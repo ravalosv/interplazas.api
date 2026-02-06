@@ -27,8 +27,15 @@ export const getFilial = async (req: Request, res: Response) => {
 
 export const createFilial = async (req: Request, res: Response) => {
   try {
-    const { nombre, extranjera, grupoId, apiUrl, apiKey } = req.body;
-    const data = await filialService.createFilial({ nombre, extranjera, grupoId, apiUrl, apiKey });
+    const { nombre, extranjera, utilizaApi, grupoId, apiUrl, apiKey } = req.body;
+
+    if (utilizaApi) {
+      if (!apiUrl || !apiKey) {
+        throw new Error("Si la filial utiliza API, los campos API URL y API KEY son obligatorios.");
+      }
+    }
+
+    const data = await filialService.createFilial({ nombre, extranjera, utilizaApi, grupoId, apiUrl, apiKey });
     const ret: ApiReturnPayload = { success: true, data };
     return res.send(ret);
   } catch (error: any) {
@@ -40,8 +47,15 @@ export const createFilial = async (req: Request, res: Response) => {
 export const updateFilial = async (req: Request, res: Response) => {
   try {
     const id = Number(req.params.id);
-    const { nombre, extranjera, grupoId, apiUrl, apiKey } = req.body;
-    const data = await filialService.updateFilial(id, { nombre, extranjera, grupoId, apiUrl, apiKey });
+    const { nombre, extranjera, utilizaApi, grupoId, apiUrl, apiKey } = req.body;
+
+    if (utilizaApi) {
+      if (!apiUrl || !apiKey) {
+        throw new Error("Si la filial utiliza API, los campos API URL y API KEY son obligatorios.");
+      }
+    }
+
+    const data = await filialService.updateFilial(id, { nombre, extranjera, utilizaApi, grupoId, apiUrl, apiKey });
     const ret: ApiReturnPayload = { success: true, data };
     return res.send(ret);
   } catch (error: any) {

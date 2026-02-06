@@ -3,6 +3,7 @@ export interface IFilial {
   nombre: string;
   grupoId: number;
   extranjera: boolean;
+  utilizaApi: boolean;
   apiUrl?: string;
   apiKey?: string;
 }

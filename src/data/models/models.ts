@@ -91,6 +91,7 @@ class FilialModel extends Model<IFilial> implements IFilial {
   public nombre!: string;
   public grupoId!: number;
   public extranjera!: boolean;
+  public utilizaApi!: boolean;
   public apiUrl!: string;
   public apiKey!: string;
 }
@@ -115,6 +116,11 @@ FilialModel.init(
       },
     },
     extranjera: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
+    utilizaApi: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: false,
