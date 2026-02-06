@@ -42,12 +42,12 @@ app.use(router);
 app.use("/api/storage", express.static(path.join(__dirname, "..", "storage")));
 
 // Servir la aplicación Angular
-//app.use(express.static(path.join(__dirname, "..", "dist", "eventos-ui")));
+app.use(express.static(path.join(__dirname, "..", "public")));
 
 // Todas las demás rutas sirven la app de Angular
-//app.get("*", (req, res) => {
-//  res.sendFile(path.join(__dirname, "..", "dist", "eventos-ui", "index.html"));
-//});
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "..", "public", "index.html"));
+});
 
 dbConnection().then(() => {
   console.log("Conexión a la base de datos exitosa");
