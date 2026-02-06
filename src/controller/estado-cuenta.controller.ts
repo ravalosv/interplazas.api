@@ -51,7 +51,8 @@ export const createMovimiento = async (req: RequestExt, res: Response) => {
     if (!usuarioId) {
         return res.status(401).json(ApiReturn.error("Usuario no autenticado."));
     }
-    const data = await service.createMovimiento(req.body, usuarioId);
+    const file = req.file;
+    const data = await service.createMovimiento(req.body, usuarioId, file);
     res.json(ApiReturn.success(data, "Movimiento creado exitosamente."));
   } catch (error: any) {
     res.status(500).json(ApiReturn.error(error.message));
@@ -68,6 +69,32 @@ export const updateMovimiento = async (req: RequestExt, res: Response) => {
     const { id } = req.params as any;
     const movimiento = await service.updateMovimiento(Number(id), req.body, usuarioId);
     res.json(ApiReturn.success(movimiento, "Movimiento actualizado exitosamente."));
+  } catch (error: any) {
+    res.status(500).json(ApiReturn.error(error.message));
+  }
+};
+
+export const uploadComprobante = async (req: RequestExt, res: Response) => {
+  try {
+    const { id } = req.params as any;
+    const file = req.file;
+
+    if (!file) {
+      return res.status(400).json(ApiReturn.error("No se ha subido ningún archivo."));
+    }
+
+    const result = await service.uploadComprobante(Number(id), file);
+    res.json(ApiReturn.success(result, "Comprobante cargado exitosamente."));
+  } catch (error: any) {
+    res.status(500).json(ApiReturn.error(error.message));
+  }
+};
+
+export const deleteComprobante = async (req: RequestExt, res: Response) => {
+  try {
+    const { id } = req.params as any;
+    const result = await service.removeComprobante(Number(id));
+    res.json(ApiReturn.success(result, "Comprobante eliminado exitosamente."));
   } catch (error: any) {
     res.status(500).json(ApiReturn.error(error.message));
   }

@@ -8,6 +8,8 @@ import {
   SucursalModel
 } from "../data/models/models";
 import interDB from "../core/dbconfig/mariadb";
+import path from "path";
+import fs from "fs";
 
 export class EstadoCuentaService {
 
@@ -109,7 +111,7 @@ export class EstadoCuentaService {
     return await TipoMovimientoEstadoCuentaModel.findAll();
   }
 
-  async createMovimiento(data: any, usuarioId: number) {
+  async createMovimiento(data: any, usuarioId: number, file?: Express.Multer.File) {
     const {
       fecha,
       tipoMovimientoId,
@@ -165,7 +167,7 @@ export class EstadoCuentaService {
         finalMontoUSD = montoUSD * tipoMovimiento.naturaleza;
     }
 
-    return await EstadoCuentaMovimientoModel.create({
+    const nuevoMovimiento = await EstadoCuentaMovimientoModel.create({
       fecha,
       tipoMovimientoId,
       montoMXNAbs,
@@ -183,6 +185,64 @@ export class EstadoCuentaService {
       referencia,
       usuarioId
     });
+
+    if (file) {
+      const url = this.moveFile(file, nuevoMovimiento.id);
+      await nuevoMovimiento.update({ comprobanteUrl: url });
+      nuevoMovimiento.comprobanteUrl = url;
+    }
+
+    return nuevoMovimiento;
+  }
+
+  async uploadComprobante(movimientoId: number, file: Express.Multer.File) {
+    const movimiento = await EstadoCuentaMovimientoModel.findByPk(movimientoId);
+    if (!movimiento) {
+      throw new Error("El movimiento no existe.");
+    }
+
+    if (movimiento.comprobanteUrl) {
+      this.removeFile(movimiento.comprobanteUrl);
+    }
+
+    const url = this.moveFile(file, movimientoId);
+    await movimiento.update({ comprobanteUrl: url });
+    return movimiento;
+  }
+
+  async removeComprobante(movimientoId: number) {
+    const movimiento = await EstadoCuentaMovimientoModel.findByPk(movimientoId);
+    if (!movimiento) {
+      throw new Error("El movimiento no existe.");
+    }
+    if (movimiento.comprobanteUrl) {
+      this.removeFile(movimiento.comprobanteUrl);
+      await movimiento.update({ comprobanteUrl: null });
+    }
+    return movimiento;
+  }
+
+  private moveFile(file: Express.Multer.File, movimientoId: number): string {
+    const storagePath = path.join(process.cwd(), "storage", "movimientos", movimientoId.toString());
+    
+    if (!fs.existsSync(storagePath)) {
+      fs.mkdirSync(storagePath, { recursive: true });
+    }
+
+    const ext = file.originalname.split(".").pop();
+    const fileName = `${Date.now()}.${ext}`;
+    const newPath = path.join(storagePath, fileName);
+
+    fs.renameSync(file.path, newPath);
+
+    return `movimientos/${movimientoId}/${fileName}`;
+  }
+
+  private removeFile(relativePath: string) {
+    const fullPath = path.join(process.cwd(), "storage", relativePath);
+    if (fs.existsSync(fullPath)) {
+      fs.unlinkSync(fullPath);
+    }
   }
 
   async updateMovimiento(id: number, data: any, usuarioId: number) {

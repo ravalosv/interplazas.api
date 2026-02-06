@@ -19,6 +19,7 @@ export class EstadoCuentaMovimientoModel extends Model<IEstadoCuentaMovimiento> 
   public sucursalNombre!: string | null;
   public observacion!: string;
   public referencia!: string;
+  public comprobanteUrl!: string | null;
   public usuarioId!: number | null;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -104,6 +105,10 @@ export const initEstadoCuentaMovimientoModel = (sequelize: any) => {
         allowNull: true,
       },
       referencia: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      comprobanteUrl: {
         type: DataTypes.STRING,
         allowNull: true,
       },

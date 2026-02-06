@@ -16,6 +16,7 @@ export interface IEstadoCuentaMovimiento {
   sucursalNombre?: string | null;
   observacion?: string;
   referencia?: string;
+  comprobanteUrl?: string | null;
   usuarioId?: number | null;
   createdAt?: Date;
   updatedAt?: Date;
