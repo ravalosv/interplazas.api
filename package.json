@@ -12,6 +12,7 @@
     "build:tsc": "tsc -p tsconfig.json",
     "migration:create": "npx sequelize-cli migration:create --name ",
     "migrate": "npx sequelize-cli db:migrate",
+    "migrate-prod": "cross-env NODE_ENV=production npx sequelize-cli db:migrate",
     "migrate-rollback": "npx sequelize-cli db:migrate:undo",
     "seed:create": "npx sequelize-cli seed:generate --name ",
     "seed": "npx sequelize-cli db:seed:all",
