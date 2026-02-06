@@ -4,7 +4,7 @@ import { checkJwt, checkRole } from "../core/middleware/session.middleware";
 
 const router = Router();
 
-router.get("/", checkJwt, checkRole([1]), filialController.getFiliales);
+router.get("/", checkJwt, checkRole([1,2]), filialController.getFiliales);
 router.get("/:id", checkJwt, checkRole([1]), filialController.getFilial);
 router.post("/", checkJwt, checkRole([1]), filialController.createFilial);
 router.put("/:id", checkJwt, checkRole([1]), filialController.updateFilial);
