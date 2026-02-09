@@ -12,7 +12,6 @@ import { IStatus } from "../interfaces/status.interface";
 import { IServicio } from "../interfaces/servicios.interface";
 import { IPeriodo } from "../interfaces/periodo.interface";
 import { ICedula, ICedulaDetalle } from "../interfaces/cedula.interface";
-import { ICostos } from "../interfaces/costos.interface";
 import { IGrupo } from "../interfaces/grupo.interface";
 import { ISucursal } from "../interfaces/sucursal.interface";
 import { ICanalComunicacion } from "../interfaces/canal_comunicacion.interface";
@@ -20,6 +19,7 @@ import { IServicioObservacion } from "../interfaces/servicio_observacion.interfa
 import { ISettings } from "../interfaces/settings.interface";
 import { EstadoCuentaMovimientoModel, initEstadoCuentaMovimientoModel } from './estado-cuenta-movimiento.model';
 import { TipoMovimientoEstadoCuentaModel, initTipoMovimientoEstadoCuentaModel } from './tipo-movimiento-estado-cuenta.model';
+import { ConsultasContratosLogModel, initConsultasContratosLogModel } from './consultas-contratos-log.model';
 
 
 // Define el modelo usando la interfaz
@@ -916,32 +916,7 @@ CedulaDetalleModel.init(
 
 initEstadoCuentaMovimientoModel(interDB);
 initTipoMovimientoEstadoCuentaModel(interDB);
-
-
-class CostosModel extends Model<ICostos> implements ICostos {
-  public id!: number;
-  public costo_servicio!: number;
-}
-
-CostosModel.init(
-  {
-    id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
-    },
-    costo_servicio: {
-      type: DataTypes.DECIMAL(10, 2),
-      allowNull: false,
-    },
-  },
-  {
-    sequelize: interDB,
-    modelName: "Costos",
-    tableName: "costos",
-    timestamps: true,
-  }
-);
+initConsultasContratosLogModel(interDB);
 
 class GrupoModel extends Model<IGrupo> implements IGrupo {
   public id!: number;
@@ -1106,10 +1081,10 @@ export {
   CedulaDetalleModel,
   EstadoCuentaMovimientoModel,
   TipoMovimientoEstadoCuentaModel,
-  CostosModel,
   GrupoModel,
   SucursalModel,
   CanalComunicacionModel,
   ServicioObservacionModel,
   SettingsModel,
+  ConsultasContratosLogModel,
 };

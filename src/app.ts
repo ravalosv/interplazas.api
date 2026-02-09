@@ -13,6 +13,8 @@ const PORT = process.env.SERVER_PORT || 3001;
 const app = express();
 const path = require("path");
 
+app.use(express.static(path.join(__dirname, "..", "public")));
+
 const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(",") || [];
 //["http://54.70.207.245:3166", "http://54.70.207.245:3179", "http://localhost:4200"];
 
@@ -24,7 +26,8 @@ const corsOptions = {
     if (allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
-      callback(new Error("Not allowed by CORS"));
+      const msg = `Not allowed by CORS. Origin: ${origin}`;
+      callback(new Error(msg));
     }
   },
   optionsSuccessStatus: 200,
@@ -40,9 +43,6 @@ app.use(router);
 
 // Sirviendo archivos estáticos desde 'storage'
 app.use("/api/storage", express.static(path.join(__dirname, "..", "storage")));
-
-// Servir la aplicación Angular
-app.use(express.static(path.join(__dirname, "..", "public")));
 
 // Todas las demás rutas sirven la app de Angular
 app.get("*", (req, res) => {
