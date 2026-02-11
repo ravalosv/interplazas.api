@@ -4,10 +4,10 @@ import { checkJwt, checkRole } from "../core/middleware/session.middleware";
 
 const router = Router();
 
-router.get("/", checkJwt, checkRole([1]), conceptoController.getConceptos);
-router.get("/:id", checkJwt, checkRole([1]), conceptoController.getConcepto);
-router.post("/", checkJwt, checkRole([1]), conceptoController.createConcepto);
-router.put("/:id", checkJwt, checkRole([1]), conceptoController.updateConcepto);
-router.delete("/:id", checkJwt, checkRole([1]), conceptoController.deleteConcepto);
+router.get("/", checkJwt, checkRole([1, 3, 4]), conceptoController.getConceptos);
+router.get("/:id", checkJwt, checkRole([3]), conceptoController.getConcepto);
+router.post("/", checkJwt, checkRole([3]), conceptoController.createConcepto);
+router.put("/:id", checkJwt, checkRole([3]), conceptoController.updateConcepto);
+router.delete("/:id", checkJwt, checkRole([3]), conceptoController.deleteConcepto);
 
 export { router };

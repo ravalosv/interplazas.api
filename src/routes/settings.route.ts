@@ -4,10 +4,10 @@ import { checkJwt, checkRole } from "../core/middleware/session.middleware";
 
 const router = Router();
 
-router.get("/", checkJwt, checkRole([1]), settingsController.getSettings);
-router.get("/:id", checkJwt, checkRole([1]), settingsController.getSetting);
-router.post("/", checkJwt, checkRole([1]), settingsController.createSetting);
-router.put("/:id", checkJwt, checkRole([1]), settingsController.updateSetting);
-router.delete("/:id", checkJwt, checkRole([1]), settingsController.deleteSetting);
+router.get("/", checkJwt, checkRole([1, 3]), settingsController.getSettings);
+router.get("/:id", checkJwt, checkRole([1, 3]), settingsController.getSetting);
+router.post("/", checkJwt, checkRole([1, 3]), settingsController.createSetting);
+router.put("/:id", checkJwt, checkRole([1, 3]), settingsController.updateSetting);
+router.delete("/:id", checkJwt, checkRole([1, 3]), settingsController.deleteSetting);
 
 export { router };
