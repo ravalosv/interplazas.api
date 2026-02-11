@@ -14,7 +14,10 @@ export const getUsers = async ({ filter = "" }: { filter?: string } = {}) => {
 
   const usersList = users.map((user) => {
     const { password: passHash, ...userWithoutPassword } = user.toJSON();
-    return userWithoutPassword;
+    return {
+      ...userWithoutPassword,
+      role: userWithoutPassword.tipoUsuario?.nombre || "UNKNOWN_ROLE",
+    };
   });
 
   return usersList;
@@ -25,7 +28,10 @@ export const getUserById = async (id: any) => {
 
   const { password: passHash, ...userWithoutPassword } = userFound!.toJSON();
 
-  return userWithoutPassword;
+  return {
+    ...userWithoutPassword,
+    role: userWithoutPassword.tipoUsuario?.nombre || "UNKNOWN_ROLE",
+  };
 };
 
 export const updateUser = async (id: any, { name, email, tipoUsuarioId, filialId }: any) => {
