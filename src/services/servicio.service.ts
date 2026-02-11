@@ -1,4 +1,4 @@
-import { ServicioModel, PeriodoModel } from "../data/models/models";
+import { ServicioModel, PeriodoModel, ServicioObservacionModel, CedulaDetalleModel } from "../data/models/models";
 import { IServicio } from "../data/interfaces/servicios.interface";
 import { Op } from "sequelize";
 import * as fs from "fs";
@@ -287,7 +287,30 @@ export class ServicioService {
   async delete(id: number) {
     const record = await ServicioModel.findByPk(id);
     if (!record) return null;
-    await record.destroy();
-    return true;
+
+    const t = await ServicioModel.sequelize!.transaction();
+
+    try {
+      // Delete related observations
+      await ServicioObservacionModel.destroy({
+        where: { servicioId: id },
+        transaction: t
+      });
+
+      // Delete related cedula details
+      await CedulaDetalleModel.destroy({
+        where: { servicioId: id },
+        transaction: t
+      });
+
+      // Delete the service
+      await record.destroy({ transaction: t });
+
+      await t.commit();
+      return true;
+    } catch (error) {
+      await t.rollback();
+      throw error;
+    }
   }
 }
