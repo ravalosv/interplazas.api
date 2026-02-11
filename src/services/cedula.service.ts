@@ -318,6 +318,27 @@ export class CedulaService {
     });
   }
 
+  async getCedulasByPeriodoWithDetails(periodoId: number) {
+    return await CedulaModel.findAll({
+      where: { periodoId },
+      include: [
+        { association: "filial" },
+        {
+          association: "detalles",
+          include: [
+            { association: "servicio" },
+            { association: "sucursalOrigen" },
+            { association: "sucursalOtorgante" },
+          ],
+        },
+      ],
+      order: [
+        ["filialId", "ASC"],
+        ["id", "ASC"],
+      ],
+    });
+  }
+
   async getCedulaById(id: number) {
     return await CedulaModel.findByPk(id, {
       include: [

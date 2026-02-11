@@ -51,6 +51,23 @@ export const getCedulasByPeriodo = async (req: Request, res: Response) => {
   }
 };
 
+export const getCedulasByPeriodoWithDetails = async (req: Request, res: Response) => {
+  try {
+    const periodoId = Number(req.params.periodoId);
+
+    if (!periodoId) {
+      return res
+        .status(400)
+        .json({ success: false, message: "El periodoId es requerido." });
+    }
+
+    const data = await service.getCedulasByPeriodoWithDetails(periodoId);
+    res.json({ success: true, data });
+  } catch (error) {
+    handleHttp(res, error);
+  }
+};
+
 export const getCedulaById = async (req: Request, res: Response) => {
   try {
     const id = Number(req.params.id);
