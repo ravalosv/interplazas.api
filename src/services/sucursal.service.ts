@@ -10,6 +10,7 @@ export const getSucursales = async () => {
         include: [{ model: GrupoModel, as: "grupo" }],
       },
     ],
+    order: [['nombre', 'ASC']],
   });
   return sucursales.map((s) => s.toJSON());
 };

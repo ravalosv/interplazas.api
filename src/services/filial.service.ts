@@ -5,6 +5,7 @@ import { FilialModel, GrupoModel, SucursalModel } from "../data/models/models";
 export const getFiliales = async () => {
   const filiales = await FilialModel.findAll({
     include: [{ model: GrupoModel, as: "grupo" }],
+    order: [['nombre', 'ASC']],
   });
   return filiales.map((f) => f.toJSON());
 };

@@ -153,8 +153,13 @@ export class ServicioService {
   }
 
   async uploadDocument(id: number, fieldName: string, file: Express.Multer.File) {
-    const servicio = await ServicioModel.findByPk(id);
+    const servicio = await ServicioModel.findByPk(id, { include: ["periodo"] });
     if (!servicio) throw new Error("Servicio no encontrado");
+
+    // @ts-ignore
+    if (servicio.periodo && !servicio.periodo.activo) {
+      throw new Error("No se puede modificar un servicio de un periodo cerrado.");
+    }
 
     // Remove old file if exists
     // @ts-ignore
@@ -171,8 +176,13 @@ export class ServicioService {
   }
 
   async deleteDocument(id: number, fieldName: string) {
-    const servicio = await ServicioModel.findByPk(id);
+    const servicio = await ServicioModel.findByPk(id, { include: ["periodo"] });
     if (!servicio) throw new Error("Servicio no encontrado");
+
+    // @ts-ignore
+    if (servicio.periodo && !servicio.periodo.activo) {
+      throw new Error("No se puede modificar un servicio de un periodo cerrado.");
+    }
 
     // @ts-ignore
     const oldPath = servicio[fieldName];
@@ -285,8 +295,13 @@ export class ServicioService {
   }
 
   async delete(id: number) {
-    const record = await ServicioModel.findByPk(id);
+    const record = await ServicioModel.findByPk(id, { include: ["periodo"] });
     if (!record) return null;
+
+    // @ts-ignore
+    if (record.periodo && !record.periodo.activo) {
+      throw new Error("No se puede eliminar un servicio de un periodo cerrado.");
+    }
 
     const t = await ServicioModel.sequelize!.transaction();
 
