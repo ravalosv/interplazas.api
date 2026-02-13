@@ -427,6 +427,10 @@ class ServicioModel extends Model<IServicio> implements IServicio {
   public exp_Expediente_Completo!: string;
   public exp_Observaciones_cierre!: string;
   public penalizado!: boolean;
+  public exp_ine_responsable_url!: string;
+  public exp_comprobante_domicilio_resp_url!: string;
+  public exp_ine_aval_url!: string;
+  public fori_estado_cuenta_url!: string;
   public PeriodoId!: number;
   public Usuario_CapturaId!: number;
   public Fecha_Captura!: Date;
@@ -588,6 +592,22 @@ ServicioModel.init(
     },
     penalizado: {
       type: DataTypes.BOOLEAN,
+      allowNull: true,
+    },
+    exp_ine_responsable_url: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    exp_comprobante_domicilio_resp_url: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    exp_ine_aval_url: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    fori_estado_cuenta_url: {
+      type: DataTypes.STRING,
       allowNull: true,
     },
     PeriodoId: {

@@ -35,6 +35,10 @@ export interface IServicio {
   exp_Expediente_Completo: string;
   exp_Observaciones_cierre: string;
   penalizado: boolean;
+  exp_ine_responsable_url?: string;
+  exp_comprobante_domicilio_resp_url?: string;
+  exp_ine_aval_url?: string;
+  fori_estado_cuenta_url?: string;
   PeriodoId: number;
   Usuario_CapturaId: number;
   Fecha_Captura: Date;
