@@ -1004,6 +1004,8 @@ class GrupoModel extends Model<IGrupo> implements IGrupo {
   public id!: number;
   public nombre!: string;
   public cobroEntreFiliales!: boolean;
+  public cedula_destinatarios_email!: string;
+  public cedula_template_id!: number;
 }
 
 GrupoModel.init(
@@ -1021,6 +1023,15 @@ GrupoModel.init(
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: false,
+    },
+    cedula_destinatarios_email: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    cedula_template_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: { model: "email_templates", key: "id" },
     },
   },
   {
