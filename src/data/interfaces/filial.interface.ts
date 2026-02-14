@@ -6,4 +6,8 @@ export interface IFilial {
   utilizaApi: boolean;
   apiUrl?: string;
   apiKey?: string;
+  templateSaldoPabsCero?: number;
+  templateSaldoPabsConConvenio?: number;
+  templateSaldoPabsSinConvenio?: number;
+  templateSaldoPabsParcial?: number;
 }

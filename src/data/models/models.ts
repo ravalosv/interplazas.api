@@ -17,6 +17,7 @@ import { ISucursal } from "../interfaces/sucursal.interface";
 import { ICanalComunicacion } from "../interfaces/canal_comunicacion.interface";
 import { IServicioObservacion } from "../interfaces/servicio_observacion.interface";
 import { ISettings } from "../interfaces/settings.interface";
+import { IEmailTemplate } from "../interfaces/email-template.interface";
 import { EstadoCuentaMovimientoModel, initEstadoCuentaMovimientoModel } from './estado-cuenta-movimiento.model';
 import { TipoMovimientoEstadoCuentaModel, initTipoMovimientoEstadoCuentaModel } from './tipo-movimiento-estado-cuenta.model';
 import { ConsultasContratosLogModel, initConsultasContratosLogModel } from './consultas-contratos-log.model';
@@ -94,6 +95,10 @@ class FilialModel extends Model<IFilial> implements IFilial {
   public utilizaApi!: boolean;
   public apiUrl!: string;
   public apiKey!: string;
+  public templateSaldoPabsCero!: number;
+  public templateSaldoPabsConConvenio!: number;
+  public templateSaldoPabsSinConvenio!: number;
+  public templateSaldoPabsParcial!: number;
 }
 
 FilialModel.init(
@@ -132,6 +137,38 @@ FilialModel.init(
     apiKey: {
       type: DataTypes.STRING,
       allowNull: true,
+    },
+    templateSaldoPabsCero: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: "email_templates",
+        key: "id",
+      },
+    },
+    templateSaldoPabsConConvenio: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: "email_templates",
+        key: "id",
+      },
+    },
+    templateSaldoPabsSinConvenio: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: "email_templates",
+        key: "id",
+      },
+    },
+    templateSaldoPabsParcial: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: "email_templates",
+        key: "id",
+      },
     },
   },
   {
@@ -1052,6 +1089,51 @@ SettingsModel.init(
   }
 );
 
+class EmailTemplatesModel extends Model<IEmailTemplate> implements IEmailTemplate {
+  public id!: number;
+  public nombre!: string;
+  public tipo!: string;
+  public from!: string;
+  public titulo!: string;
+  public template!: string;
+}
+
+EmailTemplatesModel.init(
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    nombre: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    tipo: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    from: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    titulo: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    template: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+    },
+  },
+  {
+    sequelize: interDB,
+    modelName: "EmailTemplate",
+    tableName: "email_templates",
+    timestamps: true,
+  }
+);
+
 // Associations
 FilialModel.belongsTo(GrupoModel, { foreignKey: "grupoId", as: "grupo" });
 GrupoModel.hasMany(FilialModel, { foreignKey: "grupoId", as: "filiales" });
@@ -1105,6 +1187,11 @@ GrupoModel.hasMany(EstadoCuentaMovimientoModel, { foreignKey: "grupoId", as: "mo
 FilialModel.hasMany(EstadoCuentaMovimientoModel, { foreignKey: "filialId", as: "movimientos" });
 
 
+FilialModel.belongsTo(EmailTemplatesModel, { foreignKey: "templateSaldoPabsCero", as: "emailTemplateSaldoPabsCero" });
+FilialModel.belongsTo(EmailTemplatesModel, { foreignKey: "templateSaldoPabsConConvenio", as: "emailTemplateSaldoPabsConConvenio" });
+FilialModel.belongsTo(EmailTemplatesModel, { foreignKey: "templateSaldoPabsSinConvenio", as: "emailTemplateSaldoPabsSinConvenio" });
+FilialModel.belongsTo(EmailTemplatesModel, { foreignKey: "templateSaldoPabsParcial", as: "emailTemplateSaldoPabsParcial" });
+
 export {
   UserModel,
   FilialModel,
@@ -1126,5 +1213,6 @@ export {
   CanalComunicacionModel,
   ServicioObservacionModel,
   SettingsModel,
+  EmailTemplatesModel,
   ConsultasContratosLogModel,
 };
