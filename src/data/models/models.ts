@@ -641,6 +641,10 @@ class PeriodoModel extends Model<IPeriodo> implements IPeriodo {
   public nombre!: string;
   public activo!: boolean;
   public estadoCuentaGenerado!: boolean;
+  public fecha_revision!: string;
+  public fecha_reenvio_cedulas!: string;
+  public fecha_visto_bueno!: string;
+  public fecha_cierre_periodo!: string;
 }
 
 PeriodoModel.init(
@@ -671,6 +675,22 @@ PeriodoModel.init(
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: false,
+    },
+    fecha_revision: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    fecha_reenvio_cedulas: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    fecha_visto_bueno: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    fecha_cierre_periodo: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
   },
   {

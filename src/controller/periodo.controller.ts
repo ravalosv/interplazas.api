@@ -26,6 +26,17 @@ export const createPeriodo = async (req: Request, res: Response) => {
   }
 };
 
+export const updatePeriodo = async (req: Request, res: Response) => {
+  try {
+    const id = Number(req.params.id);
+    const data = await service.update(id, req.body);
+    if (!data) return res.status(404).json({ success: false, message: "Periodo not found" });
+    res.json({ success: true, data });
+  } catch (error) {
+    handleHttp(res, error);
+  }
+};
+
 export const cerrarPeriodo = async (req: Request, res: Response) => {
   try {
     const id = Number(req.params.id);

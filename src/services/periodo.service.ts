@@ -43,6 +43,12 @@ export class PeriodoService {
     return await periodo.update({ activo: false });
   }
 
+  async update(id: number, data: Partial<IPeriodo>) {
+    const periodo = await PeriodoModel.findByPk(id);
+    if (!periodo) return null;
+    return await periodo.update(data);
+  }
+
   async abrirPeriodo(id: number) {
     const periodo = await PeriodoModel.findByPk(id);
     if (!periodo) return null;
