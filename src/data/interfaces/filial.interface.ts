@@ -10,4 +10,5 @@ export interface IFilial {
   templateSaldoPabsConConvenio?: number;
   templateSaldoPabsSinConvenio?: number;
   templateSaldoPabsParcial?: number;
+  destinatarios_email?: string;
 }

@@ -99,6 +99,7 @@ class FilialModel extends Model<IFilial> implements IFilial {
   public templateSaldoPabsConConvenio!: number;
   public templateSaldoPabsSinConvenio!: number;
   public templateSaldoPabsParcial!: number;
+  public destinatarios_email!: string;
 }
 
 FilialModel.init(
@@ -169,6 +170,10 @@ FilialModel.init(
         model: "email_templates",
         key: "id",
       },
+    },
+    destinatarios_email: {
+      type: DataTypes.TEXT,
+      allowNull: true,
     },
   },
   {
