@@ -179,3 +179,13 @@ export const deleteServicioObservacion = async (req: Request, res: Response) => 
     handleHttp(res, error);
   }
 };
+
+export const sendExpedienteEmail = async (req: Request, res: Response) => {
+  try {
+    const id = Number(req.params.id);
+    const data = await service.sendExpedienteEmail(id);
+    res.json({ success: true, data });
+  } catch (error) {
+    handleHttp(res, error);
+  }
+};

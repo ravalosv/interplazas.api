@@ -14,6 +14,7 @@ import {
   getServicioObservaciones,
   createServicioObservacion,
   deleteServicioObservacion,
+  sendExpedienteEmail,
 } from "../controller/servicio.controller";
 import { checkJwt } from "../core/middleware/session.middleware";
 import multerMiddleware from "../core/middleware/file.middleware";
@@ -27,6 +28,7 @@ router.post("/", checkJwt, multerMiddleware.single("file"), createServicio);
 router.get("/:id", checkJwt, getServicioById);
 router.put("/:id", checkJwt, updateServicio);
 router.post("/:id/upload", checkJwt, multerMiddleware.single("file"), uploadDocument);
+router.post("/:id/send-expediente-email", checkJwt, sendExpedienteEmail);
 router.delete("/:id/document/:fieldName", checkJwt, deleteDocument);
 router.patch("/:id/penalizado", checkJwt, updatePenalizadoStatus);
 router.patch("/:id/change-period", checkJwt, changePeriod);

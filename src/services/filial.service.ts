@@ -16,11 +16,11 @@ export const getFilialById = async (id: number) => {
   return filial.toJSON();
 };
 
-export const createFilial = async ({ nombre, extranjera, utilizaApi, grupoId, apiUrl, apiKey, templateSaldoPabsCero, templateSaldoPabsConConvenio, templateSaldoPabsSinConvenio, templateSaldoPabsParcial }: IFilial) => {
+export const createFilial = async ({ nombre, extranjera, utilizaApi, grupoId, apiUrl, apiKey, templateSaldoPabsCero, templateSaldoPabsConConvenio, templateSaldoPabsSinConvenio, templateSaldoPabsParcial, destinatarios_email, cedula_destinatarios_email, cedula_template_id }: IFilial) => {
   const t = await FilialModel.sequelize!.transaction();
   try {
     const nueva = await FilialModel.create({
-      nombre, extranjera, utilizaApi, grupoId, apiUrl, apiKey, templateSaldoPabsCero, templateSaldoPabsConConvenio, templateSaldoPabsSinConvenio, templateSaldoPabsParcial
+      nombre, extranjera, utilizaApi, grupoId, apiUrl, apiKey, templateSaldoPabsCero, templateSaldoPabsConConvenio, templateSaldoPabsSinConvenio, templateSaldoPabsParcial, destinatarios_email, cedula_destinatarios_email, cedula_template_id
     }, { transaction: t });
     await t.commit();
     return nueva.toJSON();
@@ -30,14 +30,14 @@ export const createFilial = async ({ nombre, extranjera, utilizaApi, grupoId, ap
   }
 };
 
-export const updateFilial = async (id: number, { nombre, extranjera, utilizaApi, grupoId, apiUrl, apiKey, templateSaldoPabsCero, templateSaldoPabsConConvenio, templateSaldoPabsSinConvenio, templateSaldoPabsParcial }: Partial<IFilial>) => {
+export const updateFilial = async (id: number, { nombre, extranjera, utilizaApi, grupoId, apiUrl, apiKey, templateSaldoPabsCero, templateSaldoPabsConConvenio, templateSaldoPabsSinConvenio, templateSaldoPabsParcial, destinatarios_email, cedula_destinatarios_email, cedula_template_id }: Partial<IFilial>) => {
   const t = await FilialModel.sequelize!.transaction();
   try {
     const filial = await FilialModel.findByPk(id);
     if (!filial) throw new Error("FILIAL_NOT_FOUND");
 
     const actualizada = await filial.update(
-      { nombre, extranjera, utilizaApi, grupoId, apiUrl, apiKey, templateSaldoPabsCero, templateSaldoPabsConConvenio, templateSaldoPabsSinConvenio, templateSaldoPabsParcial },
+      { nombre, extranjera, utilizaApi, grupoId, apiUrl, apiKey, templateSaldoPabsCero, templateSaldoPabsConConvenio, templateSaldoPabsSinConvenio, templateSaldoPabsParcial, destinatarios_email, cedula_destinatarios_email, cedula_template_id },
       { transaction: t }
     );
     await t.commit();
@@ -67,4 +67,3 @@ export const deleteFilial = async (id: number) => {
     throw error;
   }
 };
-

@@ -100,6 +100,8 @@ class FilialModel extends Model<IFilial> implements IFilial {
   public templateSaldoPabsSinConvenio!: number;
   public templateSaldoPabsParcial!: number;
   public destinatarios_email!: string;
+  public cedula_destinatarios_email!: string;
+  public cedula_template_id!: number;
 }
 
 FilialModel.init(
@@ -174,6 +176,18 @@ FilialModel.init(
     destinatarios_email: {
       type: DataTypes.TEXT,
       allowNull: true,
+    },
+    cedula_destinatarios_email: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    cedula_template_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: "email_templates",
+        key: "id",
+      },
     },
   },
   {
@@ -1207,6 +1221,7 @@ FilialModel.belongsTo(EmailTemplatesModel, { foreignKey: "templateSaldoPabsCero"
 FilialModel.belongsTo(EmailTemplatesModel, { foreignKey: "templateSaldoPabsConConvenio", as: "emailTemplateSaldoPabsConConvenio" });
 FilialModel.belongsTo(EmailTemplatesModel, { foreignKey: "templateSaldoPabsSinConvenio", as: "emailTemplateSaldoPabsSinConvenio" });
 FilialModel.belongsTo(EmailTemplatesModel, { foreignKey: "templateSaldoPabsParcial", as: "emailTemplateSaldoPabsParcial" });
+FilialModel.belongsTo(EmailTemplatesModel, { foreignKey: "cedula_template_id", as: "emailTemplateCedula" });
 
 export {
   UserModel,

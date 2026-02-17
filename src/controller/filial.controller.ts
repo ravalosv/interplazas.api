@@ -27,7 +27,7 @@ export const getFilial = async (req: Request, res: Response) => {
 
 export const createFilial = async (req: Request, res: Response) => {
   try {
-    const { nombre, extranjera, utilizaApi, grupoId, apiUrl, apiKey } = req.body;
+    const { nombre, extranjera, utilizaApi, grupoId, apiUrl, apiKey, templateSaldoPabsCero, templateSaldoPabsConConvenio, templateSaldoPabsSinConvenio, templateSaldoPabsParcial, destinatarios_email, cedula_destinatarios_email, cedula_template_id } = req.body;
 
     if (utilizaApi) {
       if (!apiUrl || !apiKey) {
@@ -35,7 +35,7 @@ export const createFilial = async (req: Request, res: Response) => {
       }
     }
 
-    const data = await filialService.createFilial({ nombre, extranjera, utilizaApi, grupoId, apiUrl, apiKey });
+    const data = await filialService.createFilial({ nombre, extranjera, utilizaApi, grupoId, apiUrl, apiKey, templateSaldoPabsCero, templateSaldoPabsConConvenio, templateSaldoPabsSinConvenio, templateSaldoPabsParcial, destinatarios_email, cedula_destinatarios_email, cedula_template_id });
     const ret: ApiReturnPayload = { success: true, data };
     return res.send(ret);
   } catch (error: any) {
@@ -47,7 +47,7 @@ export const createFilial = async (req: Request, res: Response) => {
 export const updateFilial = async (req: Request, res: Response) => {
   try {
     const id = Number(req.params.id);
-    const { nombre, extranjera, utilizaApi, grupoId, apiUrl, apiKey } = req.body;
+    const { nombre, extranjera, utilizaApi, grupoId, apiUrl, apiKey, templateSaldoPabsCero, templateSaldoPabsConConvenio, templateSaldoPabsSinConvenio, templateSaldoPabsParcial, destinatarios_email, cedula_destinatarios_email, cedula_template_id } = req.body;
 
     if (utilizaApi) {
       if (!apiUrl || !apiKey) {
@@ -55,7 +55,7 @@ export const updateFilial = async (req: Request, res: Response) => {
       }
     }
 
-    const data = await filialService.updateFilial(id, { nombre, extranjera, utilizaApi, grupoId, apiUrl, apiKey });
+    const data = await filialService.updateFilial(id, { nombre, extranjera, utilizaApi, grupoId, apiUrl, apiKey, templateSaldoPabsCero, templateSaldoPabsConConvenio, templateSaldoPabsSinConvenio, templateSaldoPabsParcial, destinatarios_email, cedula_destinatarios_email, cedula_template_id });
     const ret: ApiReturnPayload = { success: true, data };
     return res.send(ret);
   } catch (error: any) {
@@ -75,4 +75,3 @@ export const deleteFilial = async (req: Request, res: Response) => {
     return res.send(ret);
   }
 };
-

@@ -11,4 +11,6 @@ export interface IFilial {
   templateSaldoPabsSinConvenio?: number;
   templateSaldoPabsParcial?: number;
   destinatarios_email?: string;
+  cedula_destinatarios_email?: string;
+  cedula_template_id?: number;
 }

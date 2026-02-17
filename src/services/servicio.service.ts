@@ -1,8 +1,9 @@
-import { ServicioModel, PeriodoModel, ServicioObservacionModel, CedulaDetalleModel } from "../data/models/models";
+import { ServicioModel, PeriodoModel, ServicioObservacionModel, CedulaDetalleModel, EmailTemplatesModel } from "../data/models/models";
 import { IServicio } from "../data/interfaces/servicios.interface";
 import { Op } from "sequelize";
 import * as fs from "fs";
 import * as path from "path";
+import { sendMail } from "../core/services/mail.service";
 
 export class ServicioService {
   private calculatePenalizado(fechaServicio: string | Date, referenceDate: Date = new Date()): boolean {
@@ -327,5 +328,100 @@ export class ServicioService {
       await t.rollback();
       throw error;
     }
+  }
+
+  async sendExpedienteEmail(id: number) {
+    const servicio: any = await ServicioModel.findByPk(id, {
+      include: [
+        { association: "sucursalOrigen", include: [{ association: "filial" }] },
+        { association: "sucursalOtorgante", include: [{ association: "filial" }] },
+      ],
+    });
+    if (!servicio) throw new Error("Servicio no encontrado");
+
+    const filialOrigen = servicio.sucursalOrigen?.filial;
+    const filialOtorgante = servicio.sucursalOtorgante?.filial;
+    if (!filialOrigen) throw new Error("FILIAL_ORIGEN_NOT_FOUND");
+
+    const saldo: number = Number(servicio.fori_Saldo_Contrato || 0);
+    const aceptaConvenio: boolean = Boolean(servicio.fori_Acepta_Convenio);
+    const montoRecuperado: number = Number(servicio.fo_Contrato_Monto_Recuperado || 0);
+
+    let templateId: number | null = null;
+    if (saldo === 0) {
+      templateId = filialOrigen.templateSaldoPabsCero ?? null;
+    } else {
+      if (saldo >= 1 && aceptaConvenio && montoRecuperado > 0) {
+        templateId = filialOrigen.templateSaldoPabsParcial ?? null;
+      } else if (saldo >= 1 && aceptaConvenio) {
+        templateId = filialOrigen.templateSaldoPabsConConvenio ?? null;
+      } else if (saldo >= 1 && !aceptaConvenio) {
+        templateId = filialOrigen.templateSaldoPabsSinConvenio ?? null;
+      }
+    }
+
+    if (!templateId) throw new Error("EMAIL_TEMPLATE_NOT_CONFIGURED");
+
+    const template = await EmailTemplatesModel.findByPk(templateId);
+    if (!template) throw new Error("EMAIL_TEMPLATE_NOT_FOUND");
+
+    const tags = {
+      filial_origen: filialOrigen?.nombre || "",
+      filial_otorgante: filialOtorgante?.nombre || "",
+      contrato: servicio.fo_Contrato || "",
+    } as Record<string, string>;
+
+    const applySubjectTags = (str: string): string => {
+      return Object.keys(tags).reduce((acc, key) => {
+        const val = tags[key] || "";
+        return acc
+          .replace(new RegExp(`\\{\\s*${key}\\s*\\}`, 'g'), val)
+          .replace(new RegExp(`\\{\\{\\s*${key}\\s*\\}\\}`, 'g'), val);
+      }, str || "");
+    };
+
+    const subject = applySubjectTags((template as any).titulo || "");
+
+    const parseEmails = (s?: string | null): string[] => {
+      if (!s) return [];
+      return s
+        .split(',')
+        .map((x) => x.trim())
+        .filter((x) => x.length > 0);
+    };
+
+    const to = parseEmails(filialOrigen?.destinatarios_email);
+    const cc = parseEmails(filialOtorgante?.destinatarios_email);
+    if (!to.length) throw new Error("RECIPIENTS_MISSING");
+
+    const attachmentFields = [
+      'exp_Solicitud_Servicio_url',
+      'exp_Comprobante_Pago_url',
+      'exp_Convenio_url',
+      'fo_Documento_Cliente_url',
+      'fo_Monto_devuelto_documento_url',
+      'exp_ine_responsable_url',
+      'exp_comprobante_domicilio_resp_url',
+      'exp_ine_aval_url',
+      'fori_estado_cuenta_url',
+    ];
+
+    const attachments = attachmentFields
+      .map((field) => servicio[field])
+      .filter((relPath: string | null | undefined) => !!relPath)
+      .map((relPath: string) => path.join(process.cwd(), 'storage', relPath))
+      .filter((fullPath: string) => fs.existsSync(fullPath))
+      .map((fullPath: string) => ({ filename: path.basename(fullPath), path: fullPath }));
+
+    await sendMail({
+      to,
+      cc: cc.length ? cc : undefined,
+      subject,
+      template: (template as any).template,
+      tags,
+      attachments,
+    });
+
+    return { sent: true };
   }
 }

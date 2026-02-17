@@ -12,6 +12,7 @@ export interface MailAttachment {
 
 export interface SendMailOptions {
   to: string | string[];
+  cc?: string | string[];
   subject: string;
   template: string;
   tags?: MailTemplateTags;
@@ -75,13 +76,17 @@ export async function sendMail(options: SendMailOptions): Promise<void> {
   const rawTemplate = await loadTemplateFromFile(options.template);
   const htmlBody = applyTemplate(rawTemplate, options.tags);
 
-  const mailOptions = {
+  const mailOptions: any = {
     from: defaultFrom,
     to: options.to,
     subject: options.subject,
     html: htmlBody,
     attachments: options.attachments,
   };
+
+  if (options.cc && (Array.isArray(options.cc) ? options.cc.length : String(options.cc).trim().length)) {
+    mailOptions.cc = options.cc;
+  }
 
   await transporter.sendMail(mailOptions);
 }
