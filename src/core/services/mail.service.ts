@@ -35,8 +35,9 @@ function applyTemplate(template: string, tags?: MailTemplateTags): string {
   if (!tags) return template;
   return Object.keys(tags).reduce((acc, key) => {
     const value = String(tags[key]);
-    const regex = new RegExp(`{{\\s*${key}\\s*}}`, "g");
-    return acc.replace(regex, value);
+    return acc
+      .replace(new RegExp(`\\{\\s*${key}\\s*\\}`, "g"), value)
+      .replace(new RegExp(`{{\\s*${key}\\s*}}`, "g"), value);
   }, template);
 }
 
