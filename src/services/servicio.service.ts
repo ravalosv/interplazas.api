@@ -110,6 +110,19 @@ export class ServicioService {
   }
 
   async create(data: Omit<IServicio, "id" | "Usuario_CapturaId" | "Fecha_Captura" | "penalizado" | "PeriodoId">, userId: number, file?: Express.Multer.File) {
+    const contratoRaw = data.fo_Contrato || "";
+    const contrato = contratoRaw.trim();
+
+    if (contrato) {
+      const existing = await ServicioModel.findOne({
+        where: { fo_Contrato: contrato },
+      });
+
+      if (existing) {
+        throw new Error("El número de contrato ya ha sido utilizado en otro servicio.");
+      }
+    }
+
     const penalizado = this.calculatePenalizado(data.fo_Fecha_Servicio);
     
     // Calcular Periodo basado en fecha actual (Fecha_Captura)
@@ -135,6 +148,7 @@ export class ServicioService {
 
     const newData: IServicio = {
       ...data,
+      fo_Contrato: contrato || data.fo_Contrato,
       Usuario_CapturaId: userId,
       Fecha_Captura: fechaCaptura,
       penalizado,
@@ -247,8 +261,23 @@ export class ServicioService {
       throw new Error("No se puede actualizar un servicio de un periodo cerrado.");
     }
     
-    // Evitar actualización de campos de auditoría y campo calculado penalizado
     const { Usuario_CapturaId, Fecha_Captura, penalizado, ...updateData } = data;
+
+    const contratoRaw = updateData.fo_Contrato || "";
+    const contrato = contratoRaw.trim();
+
+    if (contrato) {
+      const existing = await ServicioModel.findOne({
+        where: {
+          fo_Contrato: contrato,
+          id: { [Op.ne]: id },
+        },
+      });
+
+      if (existing) {
+        throw new Error("El número de contrato ya ha sido utilizado en otro servicio.");
+      }
+    }
     
     // Si se actualiza la fecha del servicio, recalcular penalizado
     let newPenalizado = record.penalizado;
@@ -256,7 +285,16 @@ export class ServicioService {
       newPenalizado = this.calculatePenalizado(updateData.fo_Fecha_Servicio);
     }
     
-    return await record.update({ ...updateData, penalizado: newPenalizado });
+    const updatePayload: Partial<IServicio> = {
+      ...updateData,
+      penalizado: newPenalizado,
+    };
+
+    if (contrato) {
+      updatePayload.fo_Contrato = contrato;
+    }
+
+    return await record.update(updatePayload);
   }
 
   async updatePenalizadoStatus(id: number, penalizado: boolean) {
