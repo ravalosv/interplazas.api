@@ -16,10 +16,15 @@ const storage = diskStorage({
 });
 
 const fileFilter = (req: Request, file: Express.Multer.File, cb: any) => {
-  if (file.mimetype.startsWith("image/") || file.mimetype === "application/pdf") {
+  if (
+    file.mimetype.startsWith("image/") ||
+    file.mimetype === "application/pdf" ||
+    file.mimetype === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
+    file.mimetype === "application/vnd.ms-excel"
+  ) {
     cb(null, true);
   } else {
-    cb(new Error("Solo se permiten imágenes y archivos PDF"), false);
+    cb(new Error("Solo se permiten imágenes, archivos PDF y Excel"), false);
   }
 };
 
