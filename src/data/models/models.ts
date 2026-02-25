@@ -490,6 +490,7 @@ class ServicioModel extends Model<IServicio> implements IServicio {
   public PeriodoId!: number;
   public Usuario_CapturaId!: number;
   public Fecha_Captura!: Date;
+  public status!: string;
 }
 
 ServicioModel.init(
@@ -679,6 +680,11 @@ ServicioModel.init(
     Fecha_Captura: {
       type: DataTypes.DATE,
       allowNull: false,
+    },
+    status: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: 'En Proceso',
     },
   },
   {

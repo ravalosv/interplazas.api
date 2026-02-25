@@ -42,4 +42,5 @@ export interface IServicio {
   PeriodoId: number;
   Usuario_CapturaId: number;
   Fecha_Captura: Date;
+  status: string;
 }
