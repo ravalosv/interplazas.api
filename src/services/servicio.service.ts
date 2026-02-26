@@ -107,6 +107,7 @@ export class ServicioService {
         { association: "motivoNoOtorgado" },
         { association: "usuarioCaptura", attributes: ["id", "name", "email"] },
         { association: "periodo" },
+        { association: "logs", attributes: ["usuarioId"] },
       ],
     });
   }
@@ -140,6 +141,7 @@ export class ServicioService {
         { association: "motivoNoOtorgado" },
         { association: "usuarioCaptura", attributes: ["id", "name", "email"] },
         { association: "periodo" },
+        { association: "logs", attributes: ["usuarioId"] },
       ],
     });
   }
@@ -163,6 +165,7 @@ export class ServicioService {
         { association: "motivoNoOtorgado" },
         { association: "usuarioCaptura", attributes: ["id", "name", "email"] },
         { association: "periodo" },
+        { association: "logs", attributes: ["usuarioId"] },
       ],
     });
   }

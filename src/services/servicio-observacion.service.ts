@@ -1,5 +1,8 @@
 import { ServicioObservacionModel, UserModel, ServicioModel } from "../data/models/models";
 import { IServicioObservacion } from "../data/interfaces/servicio_observacion.interface";
+import { ServicioLogService } from "./servicio-log.service";
+
+const logService = new ServicioLogService();
 
 export const getObservacionesByServicio = async (servicioId: number) => {
   const items = await ServicioObservacionModel.findAll({
@@ -33,6 +36,7 @@ export const createObservacion = async (servicioId: number, usuarioId: number, o
       { transaction: t }
     );
     await t.commit();
+    await logService.logAction(servicioId, usuarioId, "CREACION_OBSERVACION", `Observación agregada: ${observacion}`);
     return created.toJSON();
   } catch (error) {
     await t.rollback();
@@ -40,7 +44,7 @@ export const createObservacion = async (servicioId: number, usuarioId: number, o
   }
 };
 
-export const deleteObservacion = async (id: number) => {
+export const deleteObservacion = async (id: number, usuarioId: number) => {
   const t = await ServicioObservacionModel.sequelize!.transaction();
   try {
     const item = await ServicioObservacionModel.findByPk(id, { 
@@ -59,8 +63,12 @@ export const deleteObservacion = async (id: number) => {
       throw new Error("No se puede eliminar observaciones de un servicio de un periodo cerrado.");
     }
 
+    const servicioId = item.servicioId;
+    const observacionTexto = item.observacion;
+
     await item.destroy({ transaction: t });
     await t.commit();
+    await logService.logAction(servicioId, usuarioId, "ELIMINACION_OBSERVACION", `Observación eliminada: ${observacionTexto}`);
     return true;
   } catch (error) {
     await t.rollback();

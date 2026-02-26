@@ -182,10 +182,11 @@ export const createServicioObservacion = async (req: RequestExt, res: Response) 
   }
 };
 
-export const deleteServicioObservacion = async (req: Request, res: Response) => {
+export const deleteServicioObservacion = async (req: RequestExt, res: Response) => {
   try {
     const observacionId = Number(req.params.observacionId);
-    const success = await servicioObservacionService.deleteObservacion(observacionId);
+    const usuarioId = Number(req.user?.id);
+    const success = await servicioObservacionService.deleteObservacion(observacionId, usuarioId);
     if (!success) {
       return res.status(404).json({ success: false, message: "Not found" });
     }
