@@ -10,7 +10,44 @@ const storage = diskStorage({
   },
   filename(req: Request, file: Express.Multer.File, cb: any) {
     const ext = file.originalname.split(".").pop();
-    const fileNameRandom = `${file.originalname.replace(/\.[^/.]+$/, "")}-${Date.now()}.${ext}`;
+    
+    let prefix = file.originalname.replace(/\.[^/.]+$/, "");
+
+    if (req.body && req.body.fieldName) {
+      const fieldName = req.body.fieldName;
+      const fileMap: { [key: string]: string } = {
+         'exp_Solicitud_Servicio_url': 'Solicitud_Servicio',
+         'exp_Comprobante_Pago_url': 'Comprobante_Pago',
+         'exp_Convenio_url': 'Convenio',
+         'fo_Documento_Cliente_url': 'Documento_Cliente',
+         'fo_Monto_devuelto_documento_url': 'Monto_Devuelto_Doc',
+         'exp_ine_responsable_url': 'INE_Responsable',
+         'exp_comprobante_domicilio_resp_url': 'Comprobante_Domicilio_Resp',
+         'exp_ine_aval_url': 'INE_Aval',
+         'fori_estado_cuenta_url': 'Estado_Cuenta'
+      };
+      if (fileMap[fieldName]) {
+         prefix = fileMap[fieldName];
+      }
+    } else if (req.query && req.query.fieldName) {
+      const fieldName = req.query.fieldName as string;
+      const fileMap: { [key: string]: string } = {
+         'exp_Solicitud_Servicio_url': 'Solicitud_Servicio',
+         'exp_Comprobante_Pago_url': 'Comprobante_Pago',
+         'exp_Convenio_url': 'Convenio',
+         'fo_Documento_Cliente_url': 'Documento_Cliente',
+         'fo_Monto_devuelto_documento_url': 'Monto_Devuelto_Doc',
+         'exp_ine_responsable_url': 'INE_Responsable',
+         'exp_comprobante_domicilio_resp_url': 'Comprobante_Domicilio_Resp',
+         'exp_ine_aval_url': 'INE_Aval',
+         'fori_estado_cuenta_url': 'Estado_Cuenta'
+      };
+      if (fileMap[fieldName]) {
+         prefix = fileMap[fieldName];
+      }
+    }
+
+    const fileNameRandom = `${prefix}-${Date.now()}.${ext}`;
     cb(null, fileNameRandom);
   },
 });
