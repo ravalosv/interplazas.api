@@ -21,6 +21,7 @@ import { IEmailTemplate } from "../interfaces/email-template.interface";
 import { EstadoCuentaMovimientoModel, initEstadoCuentaMovimientoModel } from './estado-cuenta-movimiento.model';
 import { TipoMovimientoEstadoCuentaModel, initTipoMovimientoEstadoCuentaModel } from './tipo-movimiento-estado-cuenta.model';
 import { ConsultasContratosLogModel, initConsultasContratosLogModel } from './consultas-contratos-log.model';
+import { ServicioLogModel, initServicioLogModel } from './servicio-log.model';
 
 
 // Define el modelo usando la interfaz
@@ -1229,6 +1230,11 @@ FilialModel.belongsTo(EmailTemplatesModel, { foreignKey: "templateSaldoPabsSinCo
 FilialModel.belongsTo(EmailTemplatesModel, { foreignKey: "templateSaldoPabsParcial", as: "emailTemplateSaldoPabsParcial" });
 FilialModel.belongsTo(EmailTemplatesModel, { foreignKey: "cedula_template_id", as: "emailTemplateCedula" });
 
+initServicioLogModel();
+ServicioLogModel.belongsTo(ServicioModel, { foreignKey: "servicioId", as: "servicio" });
+ServicioLogModel.belongsTo(UserModel, { foreignKey: "usuarioId", as: "usuario" });
+ServicioModel.hasMany(ServicioLogModel, { foreignKey: "servicioId", as: "logs" });
+
 export {
   UserModel,
   FilialModel,
@@ -1252,4 +1258,5 @@ export {
   SettingsModel,
   EmailTemplatesModel,
   ConsultasContratosLogModel,
+  ServicioLogModel,
 };

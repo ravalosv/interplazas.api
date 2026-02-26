@@ -5,6 +5,7 @@ import {
   getServiciosByPeriodo,
   createServicio,
   getServicioById,
+  getServicioLogs,
   updateServicio,
   updatePenalizadoStatus,
   changePeriod,
@@ -26,6 +27,7 @@ router.get("/fecha/:year/:month", checkJwt, getServiciosByMonthYear);
 router.get("/periodo/:periodoId", checkJwt, getServiciosByPeriodo);
 router.post("/", checkJwt, multerMiddleware.single("file"), createServicio);
 router.get("/:id", checkJwt, getServicioById);
+router.get("/:id/logs", checkJwt, getServicioLogs);
 router.put("/:id", checkJwt, updateServicio);
 router.post("/:id/upload", checkJwt, multerMiddleware.single("file"), uploadDocument);
 router.post("/:id/send-expediente-email", checkJwt, sendExpedienteEmail);

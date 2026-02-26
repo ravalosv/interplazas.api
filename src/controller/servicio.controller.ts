@@ -66,13 +66,23 @@ export const getServicioById = async (req: Request, res: Response) => {
   }
 };
 
-export const updateServicio = async (req: Request, res: Response) => {
+export const getServicioLogs = async (req: Request, res: Response) => {
+  try {
+    const data = await service.getLogs(Number(req.params.id));
+    res.json({ success: true, data });
+  } catch (error) {
+    handleHttp(res, error);
+  }
+};
+
+export const updateServicio = async (req: RequestExt, res: Response) => {
   try {
     const { fo_Sucursal_otorgante_Id, fo_Sucursal_Origen_Id } = req.body;
     if (fo_Sucursal_otorgante_Id && fo_Sucursal_Origen_Id && Number(fo_Sucursal_otorgante_Id) === Number(fo_Sucursal_Origen_Id)) {
       return res.status(400).json({ success: false, message: "La Sucursal Otorgante y la Sucursal Origen no pueden ser la misma." });
     }
-    const data = await service.update(Number(req.params.id), req.body);
+    const userId = Number(req.user?.id);
+    const data = await service.update(Number(req.params.id), req.body, userId);
     if (!data) return res.status(404).json({ success: false, message: "Not found" });
     res.json({ success: true, data });
   } catch (error) {
@@ -80,13 +90,14 @@ export const updateServicio = async (req: Request, res: Response) => {
   }
 };
 
-export const updatePenalizadoStatus = async (req: Request, res: Response) => {
+export const updatePenalizadoStatus = async (req: RequestExt, res: Response) => {
   try {
     const { penalizado } = req.body;
     if (typeof penalizado !== "boolean") {
       return res.status(400).json({ success: false, message: "Field 'penalizado' must be a boolean" });
     }
-    const data = await service.updatePenalizadoStatus(Number(req.params.id), penalizado);
+    const userId = Number(req.user?.id);
+    const data = await service.updatePenalizadoStatus(Number(req.params.id), penalizado, userId);
     if (!data) return res.status(404).json({ success: false, message: "Not found" });
     res.json({ success: true, data });
   } catch (error) {
@@ -94,13 +105,14 @@ export const updatePenalizadoStatus = async (req: Request, res: Response) => {
   }
 };
 
-export const changePeriod = async (req: Request, res: Response) => {
+export const changePeriod = async (req: RequestExt, res: Response) => {
   try {
     const { periodoId } = req.body;
     if (!periodoId) {
       return res.status(400).json({ success: false, message: "Field 'periodoId' is required" });
     }
-    const data = await service.changePeriod(Number(req.params.id), Number(periodoId));
+    const userId = Number(req.user?.id);
+    const data = await service.changePeriod(Number(req.params.id), Number(periodoId), userId);
     res.json({ success: true, data });
   } catch (error) {
     handleHttp(res, error);
@@ -117,28 +129,31 @@ export const deleteServicio = async (req: Request, res: Response) => {
   }
 };
 
-export const uploadDocument = async (req: Request, res: Response) => {
+export const uploadDocument = async (req: RequestExt, res: Response) => {
   try {
     const { id } = req.params;
     const { fieldName } = req.body;
     const file = req.file;
+    const userId = Number(req.user?.id);
 
     if (!file) return res.status(400).json({ success: false, message: "File is required" });
     if (!fieldName) return res.status(400).json({ success: false, message: "fieldName is required" });
 
-    const data = await service.uploadDocument(Number(id), fieldName, file);
+    const data = await service.uploadDocument(Number(id), fieldName, file, userId);
     res.json({ success: true, data });
   } catch (error) {
     handleHttp(res, error);
   }
 };
 
-export const deleteDocument = async (req: Request, res: Response) => {
+export const deleteDocument = async (req: RequestExt, res: Response) => {
   try {
     const { id, fieldName } = req.params;
+    const userId = Number(req.user?.id);
+
     if (!fieldName) return res.status(400).json({ success: false, message: "fieldName is required" });
 
-    const success = await service.deleteDocument(Number(id), fieldName);
+    const success = await service.deleteDocument(Number(id), fieldName, userId);
     res.json({ success: true, message: "Document deleted successfully" });
   } catch (error) {
     handleHttp(res, error);
