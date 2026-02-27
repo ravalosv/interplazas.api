@@ -1,6 +1,6 @@
 {
   "name": "servicios-cci-api",
-  "version": "2026.02.17.01",
+  "version": "2026.02.26.01",
   "description": "",
   "main": "index.js",
   "scripts": {
