@@ -7,6 +7,7 @@ import { dbConnection } from "./core/dbconfig/mariadb";
 import { logMiddleware } from "./core/middleware/log.middleware";
 import { configureCronJob } from "./core/cronjob/daemon";
 import { errorHandlerMiddleware } from "./core/middleware/error-handler.middleware";
+import { optMiddleware } from "./core/middleware/opt.middleware";
 
 const PORT = process.env.SERVER_PORT || 3001;
 
@@ -36,6 +37,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(logMiddleware);
+app.use(optMiddleware);
 app.use(router);
 
 // Rutas de la API

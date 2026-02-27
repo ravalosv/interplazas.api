@@ -1103,6 +1103,7 @@ ServicioObservacionModel.init(
 class SettingsModel extends Model<ISettings> implements ISettings {
   public id!: number;
   public comisionPF!: number;
+  public licenseDeadline!: string;
 }
 
 SettingsModel.init(
@@ -1116,6 +1117,11 @@ SettingsModel.init(
       type: DataTypes.DECIMAL(5, 2),
       allowNull: false,
       defaultValue: 0,
+    },
+    licenseDeadline: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      defaultValue: null,
     },
   },
   {
