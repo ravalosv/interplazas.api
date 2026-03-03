@@ -360,12 +360,6 @@ export class ServicioService {
       }
     }
     
-    // Si se actualiza la fecha del servicio, recalcular penalizado
-    let newPenalizado = record.penalizado;
-    if (updateData.fo_Fecha_Servicio) {
-      newPenalizado = this.calculatePenalizado(updateData.fo_Fecha_Servicio);
-    }
-
     // --- Detect Changes ---
     const changes: string[] = [];
     const fieldsToCheck = Object.keys(updateData) as (keyof typeof updateData)[];
@@ -393,7 +387,6 @@ export class ServicioService {
     
     const updatePayload: Partial<IServicio> = {
       ...updateData,
-      penalizado: newPenalizado,
     };
 
     if (contrato) {
