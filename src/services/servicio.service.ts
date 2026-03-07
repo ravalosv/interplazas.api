@@ -20,6 +20,7 @@ export class ServicioService {
     'fo_Documento_Cliente_Id': 'Tipo Documento Cliente',
     'fo_Documento_Cliente_url': 'Documento Cliente',
     'fo_Monto_devuelto_documento_url': 'Documento Monto Devuelto',
+    'fo_Monto_devuelto_documento2_url': 'Documento Monto Devuelto 2',
     'fo_Monto_Devuelto': 'Monto Devuelto',
     'fo_Jefe_Turno_Nombre': 'Jefe de Turno',
     'fo_Jefe_Turno_Puesto': 'Puesto Jefe Turno',

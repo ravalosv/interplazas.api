@@ -9,6 +9,7 @@ export interface IServicio {
   fo_Documento_Cliente_Id: number;
   fo_Documento_Cliente_url: string;
   fo_Monto_devuelto_documento_url: string;
+  fo_Monto_devuelto_documento2_url: string;
   fo_Monto_Devuelto: number;
   fo_Jefe_Turno_Nombre: string;
   fo_Jefe_Turno_Puesto: string;

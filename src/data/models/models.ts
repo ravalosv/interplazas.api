@@ -458,6 +458,7 @@ class ServicioModel extends Model<IServicio> implements IServicio {
   public fo_Documento_Cliente_Id!: number;
   public fo_Documento_Cliente_url!: string;
   public fo_Monto_devuelto_documento_url!: string;
+  public fo_Monto_devuelto_documento2_url!: string;
   public fo_Monto_Devuelto!: number;
   public fo_Jefe_Turno_Nombre!: string;
   public fo_Jefe_Turno_Puesto!: string;
@@ -538,6 +539,10 @@ ServicioModel.init(
       allowNull: true,
     },
     fo_Monto_devuelto_documento_url: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    fo_Monto_devuelto_documento2_url: {
       type: DataTypes.STRING,
       allowNull: true,
     },
