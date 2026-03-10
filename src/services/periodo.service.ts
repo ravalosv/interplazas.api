@@ -1,5 +1,6 @@
-import { PeriodoModel, CedulaModel, EstadoCuentaMovimientoModel } from "../data/models/models";
+import { PeriodoModel, CedulaModel, CedulaDetalleModel, EstadoCuentaMovimientoModel } from "../data/models/models";
 import { IPeriodo } from "../data/interfaces/periodo.interface";
+import { Op } from "sequelize";
 
 export class PeriodoService {
   async getAll() {
@@ -62,7 +63,20 @@ export class PeriodoService {
         transaction: t
       });
 
-      // Eliminar cédulas asociadas al abrir el periodo
+      const cedulas = await CedulaModel.findAll({
+        where: { periodoId: id },
+        attributes: ["id"],
+        transaction: t
+      });
+
+      const cedulaIds = cedulas.map((c) => c.id);
+      if (cedulaIds.length > 0) {
+        await CedulaDetalleModel.destroy({
+          where: { cedulaId: { [Op.in]: cedulaIds } },
+          transaction: t
+        });
+      }
+
       await CedulaModel.destroy({ 
         where: { periodoId: id },
         transaction: t

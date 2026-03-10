@@ -297,14 +297,34 @@ export class CedulaService {
       throw new Error("No se pueden eliminar las cédulas de un periodo que ya tiene estado de cuenta generado.");
     }
     
-    const count = await CedulaModel.destroy({
-          where: { periodoId: periodo.id }
+    const t = await CedulaModel.sequelize!.transaction();
+
+    try {
+      const cedulas = await CedulaModel.findAll({
+        where: { periodoId: periodo.id },
+        attributes: ["id"],
+        transaction: t
       });
-      
-      // Details are cascade deleted by database if configured, but Sequelize associations need `hooks: true` or manual delete if DB doesn't have ON DELETE CASCADE.
-      // My migration has `onDelete: 'CASCADE'`, so DB handles it.
-      
+
+      const cedulaIds = cedulas.map((c) => c.id);
+      if (cedulaIds.length > 0) {
+        await CedulaDetalleModel.destroy({
+          where: { cedulaId: { [Op.in]: cedulaIds } },
+          transaction: t
+        });
+      }
+
+      const count = await CedulaModel.destroy({
+        where: { periodoId: periodo.id },
+        transaction: t
+      });
+
+      await t.commit();
       return { message: `Se eliminaron ${count} cédulas del periodo.` };
+    } catch (error) {
+      await t.rollback();
+      throw error;
+    }
   }
 
   async getCedulasByPeriodo(periodoId: number) {
