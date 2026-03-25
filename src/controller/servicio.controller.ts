@@ -41,6 +41,19 @@ export const getServiciosByPeriodo = async (req: Request, res: Response) => {
   }
 };
 
+export const searchServiciosByContrato = async (req: Request, res: Response) => {
+  try {
+    const contrato = String(req.query.contrato || "").trim();
+    if (!contrato) {
+      return res.status(400).json({ success: false, message: "contrato is required" });
+    }
+    const data = await service.searchByContrato(contrato);
+    res.json({ success: true, data });
+  } catch (error) {
+    handleHttp(res, error);
+  }
+};
+
 export const createServicio = async (req: RequestExt, res: Response) => {
   try {
     const { fo_Sucursal_otorgante_Id, fo_Sucursal_Origen_Id } = req.body;

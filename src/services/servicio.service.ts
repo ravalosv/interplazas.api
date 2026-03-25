@@ -171,6 +171,33 @@ export class ServicioService {
     });
   }
 
+  async searchByContrato(contrato: string) {
+    const term = (contrato || "").trim();
+    if (!term) return [];
+
+    return await ServicioModel.findAll({
+      where: {
+        fo_Contrato: { [Op.like]: `%${term}%` },
+      },
+      order: [["fo_Fecha_Servicio", "DESC"]],
+      include: [
+        { association: "sucursalOtorgante" },
+        { association: "sucursalOrigen" },
+        { association: "tipoDocumento" },
+        { association: "statusContrato" },
+        { association: "tipoServicio" },
+        { association: "concepto" },
+        { association: "solicitudServicioStatus" },
+        { association: "comprobantePagoStatus" },
+        { association: "convenioStatus" },
+        { association: "motivoNoOtorgado" },
+        { association: "usuarioCaptura", attributes: ["id", "name", "email"] },
+        { association: "periodo" },
+        { association: "logs", attributes: ["usuarioId"] },
+      ],
+    });
+  }
+
   async create(data: Omit<IServicio, "id" | "Usuario_CapturaId" | "Fecha_Captura" | "penalizado" | "PeriodoId">, userId: number, file?: Express.Multer.File) {
     const contratoRaw = data.fo_Contrato || "";
     const contrato = contratoRaw.trim();

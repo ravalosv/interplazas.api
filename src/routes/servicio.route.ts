@@ -3,6 +3,7 @@ import {
   getServicios,
   getServiciosByMonthYear,
   getServiciosByPeriodo,
+  searchServiciosByContrato,
   createServicio,
   getServicioById,
   getServicioLogs,
@@ -25,6 +26,7 @@ const router = Router();
 router.get("/", checkJwt, getServicios);
 router.get("/fecha/:year/:month", checkJwt, getServiciosByMonthYear);
 router.get("/periodo/:periodoId", checkJwt, getServiciosByPeriodo);
+router.get("/search", checkJwt, searchServiciosByContrato);
 router.post("/", checkJwt, multerMiddleware.single("file"), createServicio);
 router.get("/:id", checkJwt, getServicioById);
 router.get("/:id/logs", checkJwt, getServicioLogs);
