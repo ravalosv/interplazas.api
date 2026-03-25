@@ -127,6 +127,13 @@ export class CedulaService {
           ? Number(servicio.concepto?.montoUSD || 0)
           : Number(servicio.concepto?.montoMXN || 0);
 
+        const montoRecuperadoSaldoPABS = Number(
+          servicio.fo_Contrato_Monto_Recuperado || 0
+        );
+        const montoDevueltoSucursalOrigen = Number(servicio.fo_Monto_Devuelto || 0);
+        const saldoEfectivamenteCobrado =
+          montoRecuperadoSaldoPABS - montoDevueltoSucursalOrigen;
+
         // Servicios donde la filial es Otorgante -> tipo FAVOR
         if (filialOtorganteId === filialId) {
           let montoFavor = rawMonto;
@@ -158,12 +165,10 @@ export class CedulaService {
             conceptoNombre: servicio.concepto ? servicio.concepto.nombre : null,
             saldoPABS: Number(servicio.fori_Saldo_Contrato || 0),
             observacion: servicio.exp_Observaciones_cierre || null,
-            saldoEfectivamenteCobrado: Number(
-              servicio.fo_Contrato_Monto_Recuperado || 0
-            ),
+            saldoEfectivamenteCobrado,
             penalizado: servicio.penalizado || false,
             esFilialesHermanas: !cobroGrupo,
-            montoDevuelto: Number(servicio.fo_Monto_Devuelto || 0),
+            montoDevuelto: montoDevueltoSucursalOrigen,
             aceptaConvenio: servicio.fori_Acepta_Convenio || false,
             montoEnContrato,
           });
@@ -199,12 +204,10 @@ export class CedulaService {
             conceptoNombre: servicio.concepto ? servicio.concepto.nombre : null,
             saldoPABS: Number(servicio.fori_Saldo_Contrato || 0),
             observacion: servicio.exp_Observaciones_cierre || null,
-            saldoEfectivamenteCobrado: Number(
-              servicio.fo_Contrato_Monto_Recuperado || 0
-            ),
+            saldoEfectivamenteCobrado,
             penalizado: servicio.penalizado || false,
             esFilialesHermanas: !cobroGrupo,
-            montoDevuelto: Number(servicio.fo_Monto_Devuelto || 0),
+            montoDevuelto: montoDevueltoSucursalOrigen,
             aceptaConvenio: servicio.fori_Acepta_Convenio || false,
             montoEnContrato,
           });
