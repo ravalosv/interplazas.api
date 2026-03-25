@@ -9,7 +9,14 @@ module.exports = {
     port: process.env.DB_PORT || 3306,
     dialect: "mariadb",
     dialectOptions: {
-      allowPublicKeyRetrieval: true
+      allowPublicKeyRetrieval: true,
+      connectTimeout: 60000,
+    },
+    pool: {
+      max: 10,
+      min: 0,
+      acquire: 60000,
+      idle: 10000,
     },
     migrationStorageTableName: "_migrations"
   },
@@ -20,6 +27,16 @@ module.exports = {
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
     dialect: "mariadb",
+    dialectOptions: {
+      allowPublicKeyRetrieval: true,
+      connectTimeout: 60000,
+    },
+    pool: {
+      max: 10,
+      min: 0,
+      acquire: 60000,
+      idle: 10000,
+    },
     migrationStorageTableName: "_migrations"
   },
   production: {
@@ -29,6 +46,16 @@ module.exports = {
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
     dialect: "mariadb",
+    dialectOptions: {
+      allowPublicKeyRetrieval: true,
+      connectTimeout: 60000,
+    },
+    pool: {
+      max: 10,
+      min: 0,
+      acquire: 60000,
+      idle: 10000,
+    },
     migrationStorageTableName: "_migrations"
   }
 };

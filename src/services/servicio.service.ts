@@ -202,16 +202,6 @@ export class ServicioService {
     const contratoRaw = data.fo_Contrato || "";
     const contrato = contratoRaw.trim();
 
-    if (contrato) {
-      const existing = await ServicioModel.findOne({
-        where: { fo_Contrato: contrato },
-      });
-
-      if (existing) {
-        throw new Error("El número de contrato ya ha sido utilizado en otro servicio.");
-      }
-    }
-
     const penalizado = this.calculatePenalizado(data.fo_Fecha_Servicio);
     
     // Calcular Periodo basado en fecha actual (Fecha_Captura)
@@ -235,9 +225,19 @@ export class ServicioService {
       throw new Error("El periodo correspondiente a la fecha actual está cerrado.");
     }
 
+    if (contrato) {
+      const existing = await ServicioModel.findOne({
+        where: { fo_Contrato: contrato, PeriodoId: periodo.id },
+      });
+
+      if (existing) {
+        throw new Error("El número de contrato ya existe dentro del mismo periodo.");
+      }
+    }
+
     const newData: IServicio = {
       ...data,
-      fo_Contrato: contrato || data.fo_Contrato,
+      fo_Contrato: contrato ? contrato : null,
       Usuario_CapturaId: userId,
       Fecha_Captura: fechaCaptura,
       penalizado,
@@ -372,19 +372,20 @@ export class ServicioService {
     
     const { Usuario_CapturaId, Fecha_Captura, penalizado, ...updateData } = data;
 
-    const contratoRaw = updateData.fo_Contrato || "";
-    const contrato = contratoRaw.trim();
+    const hasContratoField = Object.prototype.hasOwnProperty.call(updateData, "fo_Contrato");
+    const contrato = hasContratoField ? String(updateData.fo_Contrato ?? "").trim() : "";
 
-    if (contrato) {
+    if (hasContratoField && contrato) {
       const existing = await ServicioModel.findOne({
         where: {
           fo_Contrato: contrato,
+          PeriodoId: (record as any).PeriodoId,
           id: { [Op.ne]: id },
         },
       });
 
       if (existing) {
-        throw new Error("El número de contrato ya ha sido utilizado en otro servicio.");
+        throw new Error("El número de contrato ya existe dentro del mismo periodo.");
       }
     }
     
@@ -417,8 +418,8 @@ export class ServicioService {
       ...updateData,
     };
 
-    if (contrato) {
-      updatePayload.fo_Contrato = contrato;
+    if (hasContratoField) {
+      updatePayload.fo_Contrato = contrato ? contrato : null;
     }
 
     const updatedRecord = await record.update(updatePayload);
@@ -519,6 +520,21 @@ export class ServicioService {
     // @ts-ignore
     if (servicio.PeriodoId === newPeriodo.id) {
       throw new Error("El periodo destino no puede ser el mismo que el actual.");
+    }
+
+    const contrato = String(servicio.fo_Contrato || "").trim();
+    if (contrato) {
+      const existing = await ServicioModel.findOne({
+        where: {
+          fo_Contrato: contrato,
+          PeriodoId: newPeriodo.id,
+          id: { [Op.ne]: id },
+        },
+      });
+
+      if (existing) {
+        throw new Error("El número de contrato ya existe dentro del mismo periodo.");
+      }
     }
 
     // Calculate penalized based on new period

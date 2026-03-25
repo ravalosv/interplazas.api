@@ -452,7 +452,7 @@ class ServicioModel extends Model<IServicio> implements IServicio {
   public canalComunicacionId!: number;
   public fo_Sucursal_otorgante_Id!: number;
   public fo_Sucursal_Origen_Id!: number;
-  public fo_Contrato!: string;
+  public fo_Contrato!: string | null;
   public fo_Nombre_Titular!: string;
   public fo_Nombre_Finado!: string;
   public fo_Documento_Cliente_Id!: number;

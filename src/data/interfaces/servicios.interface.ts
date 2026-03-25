@@ -3,7 +3,7 @@ export interface IServicio {
   canalComunicacionId: number | null;
   fo_Sucursal_otorgante_Id: number; // SucursalModel
   fo_Sucursal_Origen_Id: number; // SucursalModel
-  fo_Contrato: string;
+  fo_Contrato: string | null;
   fo_Nombre_Titular: string;
   fo_Nombre_Finado: string;
   fo_Documento_Cliente_Id: number;
