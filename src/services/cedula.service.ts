@@ -33,7 +33,22 @@ export class CedulaService {
     const settings = await SettingsModel.findOne();
     const comisionPFSetting = settings ? Number(settings.comisionPF || 0) : 0;
 
-    // 4. Obtener Servicios
+    // 4. Obtener filiales (se generan cédulas aunque no tengan servicios)
+    const filiales = await FilialModel.findAll({
+      include: [{ association: "grupo" }],
+    });
+
+    const filialesMap = new Map<number, FilialModel>();
+    const foreignFilialIds = new Set<number>();
+
+    filiales.forEach((f) => {
+      filialesMap.set(f.id, f);
+      if (f.extranjera) {
+        foreignFilialIds.add(f.id);
+      }
+    });
+
+    // 5. Obtener Servicios
     const servicios = await ServicioModel.findAll({
       where: {
         PeriodoId: periodo.id,
@@ -49,44 +64,12 @@ export class CedulaService {
       ],
     });
 
-    if (servicios.length === 0) {
-      return { message: "No hay servicios registrados en este periodo." };
-    }
-
-    // 5. Identificar Filiales Involucradas (a través de las sucursales)
-    const filialIds = new Set<number>();
-    servicios.forEach((s: any) => {
-      const filialOtorganteId = s.sucursalOtorgante?.filialId;
-      const filialOrigenId = s.sucursalOrigen?.filialId;
-      if (filialOtorganteId != null) {
-        filialIds.add(filialOtorganteId);
-      }
-      if (filialOrigenId != null) {
-        filialIds.add(filialOrigenId);
-      }
-    });
-
-    const filiales = await FilialModel.findAll({
-      where: { id: { [Op.in]: Array.from(filialIds) } },
-      include: [{ association: "grupo" }],
-    });
-
-    const filialesMap = new Map<number, FilialModel>();
-    const foreignFilialIds = new Set<number>();
-    
-    filiales.forEach((f) => {
-      filialesMap.set(f.id, f);
-      if (f.extranjera) {
-        foreignFilialIds.add(f.id);
-      }
-    });
-
     // 6. Generar Cédulas por Filial
     const results = [];
 
-    for (const filialId of filialIds) {
-      const filial = filialesMap.get(filialId);
-      if (!filial) continue;
+    for (const filial of filiales as any[]) {
+      const filialId = filial.id;
+      if (!filialId) continue;
 
       let subTotalFavor = 0;
       let subTotalPagar = 0;
@@ -228,60 +211,65 @@ export class CedulaService {
         }
       }
 
+      const totalComisiones = subTotalFavor - subTotalPagar;
+
+      const totalMontoContratoFavor = detallesToCreate
+        .filter((d) => d.tipo === "FAVOR")
+        .reduce((acc, d) => acc + Number(d.montoEnContrato || 0), 0);
+
+      const comisionPFCalculada = totalMontoContratoFavor * comisionPFSetting;
+
+      const saldosEfectivamenteCobradosFavor = detallesToCreate
+        .filter((d) => d.tipo === "FAVOR")
+        .reduce((acc, d) => acc + Number(d.saldoEfectivamenteCobrado || 0), 0);
+      const saldosEfectivamenteCobradosPagar = detallesToCreate
+        .filter((d) => d.tipo === "PAGAR")
+        .reduce((acc, d) => acc + Number(d.saldoEfectivamenteCobrado || 0), 0);
+      const saldosEfectivamenteCobradosTotal =
+        saldosEfectivamenteCobradosPagar - saldosEfectivamenteCobradosFavor;
+      const totalFinal = totalComisiones + saldosEfectivamenteCobradosTotal;
+
+      const totalMontoContrato = detallesToCreate.reduce(
+        (acc, d) => acc + Number(d.montoEnContrato || 0),
+        0
+      );
+
+      console.log(
+        "Creando cédula para periodo:",
+        periodo.nombre,
+        "Sucursal:",
+        filial.nombre
+      );
+
+      const cedula = await CedulaModel.create({
+        periodoId: periodo.id,
+        periodoNombre: periodo.nombre,
+        filialId: filialId,
+        filialNombre: filial.nombre,
+        grupoId: (filial as any).grupo?.id,
+        grupoNombre: (filial as any).grupo?.nombre,
+        subTotalFavor: subTotalFavor,
+        subTotalPagar: subTotalPagar,
+        totalUsa: totalUsa,
+        totalComisiones: totalComisiones,
+        comisionPF: comisionPFCalculada,
+        saldosEfectivamenteCobradosFavor,
+        saldosEfectivamenteCobradosPagar,
+        saldosEfectivamenteCobradosTotal,
+        totalFinal,
+        totalMontoContrato,
+      });
+
       if (detallesToCreate.length > 0) {
-        const totalComisiones = subTotalFavor - subTotalPagar;
-
-        const totalMontoContratoFavor = detallesToCreate
-          .filter((d) => d.tipo === "FAVOR")
-          .reduce((acc, d) => acc + Number(d.montoEnContrato || 0), 0);
-
-        const comisionPFCalculada = totalMontoContratoFavor * comisionPFSetting;
-
-        const saldosEfectivamenteCobradosFavor = detallesToCreate
-          .filter((d) => d.tipo === "FAVOR")
-          .reduce((acc, d) => acc + Number(d.saldoEfectivamenteCobrado || 0), 0);
-        const saldosEfectivamenteCobradosPagar = detallesToCreate
-          .filter((d) => d.tipo === "PAGAR")
-          .reduce((acc, d) => acc + Number(d.saldoEfectivamenteCobrado || 0), 0);
-        const saldosEfectivamenteCobradosTotal =
-          saldosEfectivamenteCobradosPagar - saldosEfectivamenteCobradosFavor;
-        //const totalComisiones = totalNeto
-        const totalFinal = totalComisiones + saldosEfectivamenteCobradosTotal;
-
-        const totalMontoContrato = detallesToCreate.reduce(
-          (acc, d) => acc + Number(d.montoEnContrato || 0),
-          0
-        );
-
-        console.log("Creando cédula para periodo:", periodo.nombre, "Sucursal:", filial.nombre);
-
-        const cedula = await CedulaModel.create({
-          periodoId: periodo.id,
-          periodoNombre: periodo.nombre,
-          filialId: filialId,
-          filialNombre: filial.nombre,
-          grupoId: (filial as any).grupo?.id,
-          grupoNombre: (filial as any).grupo?.nombre,
-          subTotalFavor: subTotalFavor,
-          subTotalPagar: subTotalPagar,
-          totalUsa: totalUsa,
-          totalComisiones: totalComisiones,
-          comisionPF: comisionPFCalculada,
-          saldosEfectivamenteCobradosFavor,
-          saldosEfectivamenteCobradosPagar,
-          saldosEfectivamenteCobradosTotal,
-          totalFinal,
-          totalMontoContrato,
-        });
-
         const detallesWithCedulaId = detallesToCreate.map((d) => ({
           ...d,
           cedulaId: cedula.id,
         }));
 
         await CedulaDetalleModel.bulkCreate(detallesWithCedulaId);
-        results.push(cedula);
       }
+
+      results.push(cedula);
     }
 
     return results;
