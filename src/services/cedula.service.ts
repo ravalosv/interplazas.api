@@ -144,7 +144,7 @@ export class CedulaService {
           }
 
           if (isForeign) {
-            totalUsa += rawMonto;
+            totalUsa += montoFavor;
           } else {
             subTotalFavor += montoFavor;
           }
@@ -153,7 +153,7 @@ export class CedulaService {
             servicioId: servicio.id,
             tipo: isForeign ? "USA" : "FAVOR",
             sucursalOrigenNombre: sucursalOrigen.nombre,
-            monto: isForeign ? rawMonto : montoFavor,
+            monto: montoFavor,
             sucursalOrigenId: sucursalOrigenId,
             sucursalOtorganteId: sucursalOtorganteId,
             sucursalOtorganteNombre: sucursalOtorgante.nombre,
@@ -177,13 +177,16 @@ export class CedulaService {
         // Servicios donde la filial es Origen -> tipo PAGAR
         if (filialOrigenId === filialId) {
           let montoPagar = rawMonto;
+          if (isForeign && servicio.penalizado) {
+            montoPagar = 0;
+          }
           if (!isForeign && !cobroGrupo) {
             montoPagar = 0;
           }
           // Penalized check removed for PAGAR
 
           if (isForeign) {
-            totalUsa -= rawMonto;
+            totalUsa -= montoPagar;
           } else {
             subTotalPagar += montoPagar;
           }
@@ -192,7 +195,7 @@ export class CedulaService {
             servicioId: servicio.id,
             tipo: isForeign ? "USA" : "PAGAR",
             sucursalOrigenNombre: sucursalOrigen.nombre,
-            monto: isForeign ? rawMonto : montoPagar,
+            monto: montoPagar,
             sucursalOrigenId: sucursalOrigenId,
             sucursalOtorganteId: sucursalOtorganteId,
             sucursalOtorganteNombre: sucursalOtorgante.nombre,
