@@ -61,6 +61,7 @@ export class CedulaService {
         { association: "sucursalOtorgante" },
         { association: "sucursalOrigen" },
         { association: "concepto" },
+        { association: "convenioStatus" },
       ],
     });
 
@@ -133,6 +134,13 @@ export class CedulaService {
         const montoDevueltoSucursalOrigen = Number(servicio.fo_Monto_Devuelto || 0);
         const saldoEfectivamenteCobrado =
           montoRecuperadoSaldoPABS - montoDevueltoSucursalOrigen;
+        const convenioCompletado =
+          servicio.convenioStatus?.nombre === "Completado";
+        const tieneDocumentoConvenio = Boolean(
+          String(servicio.exp_Convenio_url || "").trim()
+        );
+        const mostrarSaldoPabsConveniado =
+          convenioCompletado && tieneDocumentoConvenio;
 
         // Servicios donde la filial es Otorgante -> tipo FAVOR
         if (filialOtorganteId === filialId) {
@@ -169,7 +177,7 @@ export class CedulaService {
             penalizado: servicio.penalizado || false,
             esFilialesHermanas: !cobroGrupo,
             montoDevuelto: montoDevueltoSucursalOrigen,
-            aceptaConvenio: servicio.fori_Acepta_Convenio || false,
+            aceptaConvenio: mostrarSaldoPabsConveniado,
             montoEnContrato,
           });
         }
@@ -211,7 +219,7 @@ export class CedulaService {
             penalizado: servicio.penalizado || false,
             esFilialesHermanas: !cobroGrupo,
             montoDevuelto: montoDevueltoSucursalOrigen,
-            aceptaConvenio: servicio.fori_Acepta_Convenio || false,
+            aceptaConvenio: mostrarSaldoPabsConveniado,
             montoEnContrato,
           });
         }
