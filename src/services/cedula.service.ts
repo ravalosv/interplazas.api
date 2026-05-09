@@ -72,6 +72,8 @@ export class CedulaService {
       const filialId = filial.id;
       if (!filialId) continue;
 
+      const isCedulaForeign = foreignFilialIds.has(filialId);
+
       let subTotalFavor = 0;
       let subTotalPagar = 0;
       let totalUsa = 0;
@@ -120,11 +122,13 @@ export class CedulaService {
           foreignFilialIds.has(filialOtorganteId) ||
           foreignFilialIds.has(filialOrigenId);
 
-        const rawMonto = isForeign
+        const isMontoUSD = isCedulaForeign || isForeign;
+
+        const rawMonto = isMontoUSD
           ? Number(servicio.concepto?.montoUSD || 0)
           : Number(servicio.concepto?.montoMXN || 0);
 
-        const montoEnContrato = isForeign
+        const montoEnContrato = isMontoUSD
           ? Number(servicio.concepto?.montoUSD || 0)
           : Number(servicio.concepto?.montoMXN || 0);
 
@@ -151,7 +155,9 @@ export class CedulaService {
             montoFavor = 0;
           }
 
-          if (isForeign) {
+          const tipoDetalle = !isCedulaForeign && isForeign ? "USA" : "FAVOR";
+
+          if (tipoDetalle === "USA") {
             totalUsa += montoFavor;
           } else {
             subTotalFavor += montoFavor;
@@ -159,7 +165,7 @@ export class CedulaService {
 
           detallesToCreate.push({
             servicioId: servicio.id,
-            tipo: isForeign ? "USA" : "FAVOR",
+            tipo: tipoDetalle,
             sucursalOrigenNombre: sucursalOrigen.nombre,
             monto: montoFavor,
             sucursalOrigenId: sucursalOrigenId,
@@ -193,7 +199,9 @@ export class CedulaService {
           }
           // Penalized check removed for PAGAR
 
-          if (isForeign) {
+          const tipoDetalle = !isCedulaForeign && isForeign ? "USA" : "PAGAR";
+
+          if (tipoDetalle === "USA") {
             totalUsa -= montoPagar;
           } else {
             subTotalPagar += montoPagar;
@@ -201,7 +209,7 @@ export class CedulaService {
 
           detallesToCreate.push({
             servicioId: servicio.id,
-            tipo: isForeign ? "USA" : "PAGAR",
+            tipo: tipoDetalle,
             sucursalOrigenNombre: sucursalOrigen.nombre,
             monto: montoPagar,
             sucursalOrigenId: sucursalOrigenId,
