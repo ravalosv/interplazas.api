@@ -37,7 +37,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(logMiddleware);
-app.use(optMiddleware);
+//app.use(optMiddleware);
 app.use(router);
 
 // Rutas de la API

@@ -372,6 +372,39 @@ export class ServicioService {
     
     const { Usuario_CapturaId, Fecha_Captura, penalizado, ...updateData } = data;
 
+    const incomingStatus = Object.prototype.hasOwnProperty.call(updateData, "status")
+      ? String((updateData as any).status ?? "").trim()
+      : "";
+    const currentStatus = String((record as any).status ?? "").trim();
+
+    if (incomingStatus === "Expediente Completo" && currentStatus !== "Expediente Completo") {
+      const faltantes: string[] = [];
+
+      const docClienteUrl = String(((updateData as any).fo_Documento_Cliente_url ?? (record as any).fo_Documento_Cliente_url) ?? "").trim();
+      const estadoCuentaUrl = String(((updateData as any).fori_estado_cuenta_url ?? (record as any).fori_estado_cuenta_url) ?? "").trim();
+      const solicitudUrl = String(((updateData as any).exp_Solicitud_Servicio_url ?? (record as any).exp_Solicitud_Servicio_url) ?? "").trim();
+      const solicitudStatusIdRaw = (updateData as any).exp_Solicitud_Servicio_Status_id ?? (record as any).exp_Solicitud_Servicio_Status_id;
+      const solicitudStatusId = solicitudStatusIdRaw == null ? null : Number(solicitudStatusIdRaw);
+
+      if (!docClienteUrl) faltantes.push("Documento del cliente");
+      if (!estadoCuentaUrl) faltantes.push("Estado de cuenta");
+      if (!solicitudUrl) faltantes.push("Solicitud de servicio");
+
+      if (!solicitudStatusId) {
+        faltantes.push('Estatus de solicitud de servicio: Completado');
+      } else {
+        const estado: any = await EstadoCtaStatusModel.findByPk(solicitudStatusId);
+        const nombreEstado = String(estado?.nombre ?? estado?.get?.("nombre") ?? "").trim().toUpperCase();
+        if (nombreEstado !== "COMPLETADO") {
+          faltantes.push('Estatus de solicitud de servicio: Completado');
+        }
+      }
+
+      if (faltantes.length > 0) {
+        throw new Error(`No se puede marcar expediente completo. Falta: ${faltantes.join(", ")}`);
+      }
+    }
+
     const hasContratoField = Object.prototype.hasOwnProperty.call(updateData, "fo_Contrato");
     const contrato = hasContratoField ? String(updateData.fo_Contrato ?? "").trim() : "";
 
