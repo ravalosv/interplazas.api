@@ -57,13 +57,20 @@ export class EstadoCuentaService {
       const fechaFinPeriodo = new Date(periodo.anio, periodo.mes, 0);
 
       const movimientosToCreate = cedulas.map(cedula => {
+        const isFilialExtranjera = Boolean(cedula.filial?.extranjera);
+        const totalFinal = Number(cedula.totalFinal || 0);
+        const totalUsa = Number(cedula.totalUsa || 0);
+
+        const montoMXN = isFilialExtranjera ? 0 : totalFinal;
+        const montoUSD = isFilialExtranjera ? totalFinal : totalUsa;
+
         return {
           fecha: fechaFinPeriodo, // Fecha fin del periodo
           tipoMovimientoId: tipoMovimiento.id,
-          montoMXNAbs: Math.abs(Number(cedula.totalFinal)),
-          montoUSDAbs: Math.abs(Number(cedula.totalUsa)),
-          montoMXN: Number(cedula.totalFinal),
-          montoUSD: Number(cedula.totalUsa),
+          montoMXNAbs: Math.abs(montoMXN),
+          montoUSDAbs: Math.abs(montoUSD),
+          montoMXN,
+          montoUSD,
           periodoId: periodo.id,
           cedulaId: cedula.id,
           grupoId: cedula.grupoId,
